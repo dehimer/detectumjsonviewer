@@ -1,6 +1,5 @@
 const defaultState = {
-  config: {},
-  photos: []
+  results: {}
 };
 
 export default function reducer(state = defaultState, action) {
@@ -9,10 +8,8 @@ export default function reducer(state = defaultState, action) {
   const { type, data } = action;
 
   switch (type) {
-    case 'config':
-      return { ...state, config: data };
-    case 'photos':
-      return { ...state, photos: data };
+    case 'json':
+      return { ...state, json: data };
     default:
       return state;
   }
