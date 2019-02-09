@@ -11,6 +11,7 @@
 
 .viewer .header {
     display: flex;
+    margin-bottom: 10px;
 }
 
 .viewer .header img {

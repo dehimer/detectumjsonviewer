@@ -3,6 +3,8 @@ import { Route, Switch } from 'react-router-dom';
 import Gallery from './components/Gallery/index';
 import Viewer from './components/Viewer/index';
 
+import './app.css'
+
 export default () => (
   <div>
     <Switch>
