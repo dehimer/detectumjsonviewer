@@ -9,11 +9,12 @@
 }
 
 .gallery .item {
-    flex: 1 1 300px;
+    flex: 1 1 200px;
     display: flex;
     flex-direction: column;
     background-color: white;
     color: black;
+    cursor: pointer;
 }
 
 .gallery .item img {

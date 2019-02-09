@@ -6,21 +6,29 @@ import PropTypes from 'prop-types';
 import './index.css';
 
 class Gallery extends Component {
-  state = {
-    selected: null
-  };
+  componentWillReceiveProps(nextProps) {
+    const { match: { params: { query: newQuery } } } = nextProps;
+    const { match: { params: { query: oldQuery } } } = this.props;
+    if (newQuery !== oldQuery) {
+      this.props.getjson(newQuery);
+    }
+  }
+
+  componentDidMount() {
+    const { match: { params: { query } } } = this.props;
+    this.props.getjson(query);
+  }
 
   render() {
-    const { selected } = this.state;
-    const { config, json, match } = this.props;
+    const { json } = this.props;
 
     if (json) {
+      console.log('json');
+      console.log(json);
       const { es_response: { hits: { hits } } } = json;
 
-      console.log(hits);
       const listel = hits.map(hit => {
         const { _source } = hit;
-        console.log(_source);
         const { id, img_url, model } = _source;
 
         return (
@@ -73,7 +81,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   {
-
+    getjson: (query) => {
+      dispatch({
+        type: 'server/getjson',
+        data: query
+      });
+    },
   }
 );
 
