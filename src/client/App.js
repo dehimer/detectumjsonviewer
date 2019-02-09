@@ -6,8 +6,8 @@ import Viewer from './components/Viewer/index';
 export default () => (
   <div>
     <Switch>
-      <Route exact path="/:query?" component={Gallery} />
-      <Route path="/view/:id" component={Viewer} />
+      <Route exact path="/:query" component={Gallery} />
+      <Route path="/:query/:id" component={Viewer} />
     </Switch>
   </div>
 );

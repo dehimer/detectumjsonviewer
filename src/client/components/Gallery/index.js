@@ -19,12 +19,16 @@ class Gallery extends Component {
     this.props.getjson(query);
   }
 
+  onSelect = (id) => {
+    const { history, match: { params: { query } } } = this.props;
+
+    history.push(`/${query}/${id}`);
+  };
+
   render() {
     const { json } = this.props;
 
     if (json) {
-      console.log('json');
-      console.log(json);
       const { es_response: { hits: { hits } } } = json;
 
       const listel = hits.map(hit => {
@@ -32,7 +36,10 @@ class Gallery extends Component {
         const { id, img_url, model } = _source;
 
         return (
-          <div className='item' key={id}>
+          <div
+            className='item' key={id}
+            onClick={() => this.onSelect(id)}
+          >
             <img src={img_url}/>
             <div>{ model }</div>
           </div>
