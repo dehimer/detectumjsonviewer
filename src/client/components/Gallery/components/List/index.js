@@ -1,5 +1,7 @@
 import React from "react";
 
+import './index.css'
+
 export default ({ json, select }) => {
   if (!json) return null;
 
@@ -12,18 +14,24 @@ export default ({ json, select }) => {
   const { hits: items } = hits;
   if (!items) return null;
 
-  return items.map(hit => {
-    const { _source } = hit;
-    const { id, img_url, model } = _source;
+  return (
+    <div className="list">
+    {
+      items.map(hit => {
+        const { _source } = hit;
+        const { id, img_url, model } = _source;
 
-    return (
-      <div
-        className='item' key={id}
-        onClick={() => select(id)}
-      >
-        <img src={img_url}/>
-        <div>{model}</div>
-      </div>
-    );
-  });
+        return (
+          <div
+            className='item' key={id}
+            onClick={() => select(id)}
+          >
+            <img src={img_url}/>
+            <div>{model}</div>
+          </div>
+        );
+      })
+    }
+    </div>
+  );
 }

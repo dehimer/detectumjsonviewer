@@ -1,0 +1,20 @@
+.list {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow-y: auto;
+}
+
+.list .item {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.list .item img {
+    max-width: 100%;
+    max-height: 100%;
+}

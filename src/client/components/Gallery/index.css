@@ -3,22 +3,4 @@
     flex-direction: column;
     width: 100vw;
     height: 100vh;
-
-    flex-wrap: wrap;
-    align-content: flex-start;
-    overflow-y: auto;
-}
-
-.gallery .item {
-    flex: 1 1 200px;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    color: black;
-    cursor: pointer;
-}
-
-.gallery .item img {
-    max-width: 100%;
-    max-height: 100%;
 }
