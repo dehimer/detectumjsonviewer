@@ -2,31 +2,33 @@
     display: flex;
     flex-direction: column;
 
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
 
     background-color: rgb(39, 40, 34);
     padding: 0 10px;
 }
 
-.viewer .header {
-    display: flex;
-    margin-bottom: 10px;
+.viewer .tree {
+    flex: 1;
+    overflow-y: scroll;
 }
 
-.viewer .header img {
+.header {
+    display: flex;
+    background-color: rgb(39, 40, 34);
+    padding: 10px;
+    width: 100%;
+}
+
+.header img {
     max-height: 40px;
     border-radius: 5px;
 }
 
-.viewer .header .name {
+.header .name {
     display: flex;
     align-items: center;
     margin-left: 10px;
     color: rgb(253, 151, 31);
-}
-
-.viewer .tree {
-    flex: 1;
-    overflow-y: scroll;
 }
