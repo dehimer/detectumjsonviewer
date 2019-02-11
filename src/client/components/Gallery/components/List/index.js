@@ -3,16 +3,22 @@ import React from "react";
 import './index.css'
 
 export default ({ json, select }) => {
-  if (!json) return null;
+  const noresultsEl = (
+    <div className="no-results">
+      No Results
+    </div>
+  );
+
+  if (!json) return noresultsEl;
 
   const { es_response } = json;
-  if (!es_response) return null;
+  if (!es_response) return noresultsEl;
 
   const { hits } = es_response;
-  if (!hits) return null;
+  if (!hits) return noresultsEl;
 
   const { hits: items } = hits;
-  if (!items) return null;
+  if (!items || items.length === 0) return noresultsEl;
 
   return (
     <div className="list">

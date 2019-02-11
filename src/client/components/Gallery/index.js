@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { CircularProgress } from '@material-ui/core';
+
 import Search from './components/Search'
 import List from './components/List'
 
@@ -20,7 +22,7 @@ class Gallery extends Component {
   constructor(props) {
     super(props);
 
-    this.getjson = _.debounce(this.props.getjson, 1700);
+    this.getjson = _.debounce(this.props.getjson, 700);
   }
 
   // todo: to know what sence of shapshot argument
@@ -61,7 +63,7 @@ class Gallery extends Component {
         <Search query={query} change={(query) => this.setState({ query })} />
         {
           loading
-            ? (<div>Loading...</div>)
+            ? (<div className="loading"><CircularProgress/></div>)
             : (<List json={json} select={(id) => this.onSelect(id)}/>)
         }
       </div>
