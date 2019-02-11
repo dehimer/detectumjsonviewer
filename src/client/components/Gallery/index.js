@@ -7,6 +7,7 @@ import { CircularProgress } from '@material-ui/core';
 import Search from './components/Search'
 import List from './components/List'
 import Viewer from './components/Viewer';
+import Pagination from './components/Pagination';
 
 import _ from 'underscore'
 
@@ -16,7 +17,9 @@ class Gallery extends Component {
   state = {
     json: null,
     query: '',
-    loading: false
+    loading: false,
+    offset: 0,
+    limit: 100
   };
 
   constructor(props) {
@@ -25,28 +28,36 @@ class Gallery extends Component {
     this.getjson = _.debounce(this.props.getjson, 700);
   }
 
-  // todo: to know what sence of shapshot argument
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { query: oldQuery } = prevState;
-    const { query: newQuery } = this.state;
+  componentDidUpdate(prevProps, prevState) {
+    const { query: oldQuery, offset: oldOffset } = prevState;
+    const { query: newQuery, offset: newOffset } = this.state;
 
     if (newQuery === '' && oldQuery !== '') {
-      console.log(1);
       this.setState({ json: null, loading: false });
-    } else if (newQuery !== oldQuery) {
-      console.log(2);
-      this.setState({ json: null, loading: newQuery }, () => {
-        this.getjson(newQuery);
+    } else if (newQuery !== oldQuery || oldOffset !== newOffset) {
+      const { offset, limit } = this.state;
+      this.setState({
+        json: null,
+        loading: {
+          query: newQuery,
+          offset: newOffset
+        },
+        offset: newOffset
+      }, () => {
+        this.getjson({ query: newQuery, offset, limit });
       });
     }
 
 
     const { json: newJson } = this.props;
-    const { loading } = this.state;
+    const { loading, offset, limit } = this.state;
 
-    if (newJson && loading === newJson.q) {
-      console.log(3);
-      this.setState({ json: newJson, loading: false });
+    if (newJson && loading) {
+      const {q: query, req: { size, from }} = newJson;
+
+      if (loading.query === query && offset === from*1 && limit === size*1) {
+        this.setState({ json: newJson, loading: false });
+      }
     }
   }
 
@@ -67,7 +78,9 @@ class Gallery extends Component {
   };
 
   render() {
-    const { json, query, loading, item } = this.state;
+    const {
+      json, query, loading, item, offset, limit
+    } = this.state;
 
     return (
       <div className="gallery">
@@ -83,6 +96,13 @@ class Gallery extends Component {
             ? <Viewer item={item} close={() => this.setState({ item: null })} />
             : null
         }
+
+        <Pagination
+          json={json}
+          offset={offset}
+          limit={limit}
+          change={(page) => this.setState({ offset: page * limit })}
+        />
       </div>
     );
   }
@@ -101,10 +121,14 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   {
-    getjson: (query) => {
+    getjson: ({query, offset, limit}) => {
       dispatch({
         type: 'server/getjson',
-        data: query
+        data: {
+          query,
+          offset,
+          limit
+        }
       });
     },
   }

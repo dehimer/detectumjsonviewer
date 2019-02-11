@@ -36,9 +36,9 @@ io.on('connection', (socket) => {
   });
 });
 
-can.on('json:sync', (socket = io, query) => {
+can.on('json:sync', (socket = io, { query, offset, limit }) => {
   if (query) {
-    const url = `${config.searchUrl}?q=${query}&id2name=true&getrawoutput&debug=true&explain=true`;
+    const url = `${config.searchUrl}?q=${query}&id2name=true&getrawoutput&debug=true&explain=true&offset=${offset}&limit=${limit}`;
     request.get({
       url,
     }, (err, httpResponse, body) => {

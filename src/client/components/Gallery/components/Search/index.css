@@ -1,10 +1,11 @@
 .search {
     display: flex;
-    flex: 0 0 34px;
+    flex: 0 0 42px;
     justify-content: center;
     align-items: center;
     padding: 4px;
     background-color: rgb(39, 40, 34);
+    box-sizing: border-box;
 }
 
 .search .arrow {

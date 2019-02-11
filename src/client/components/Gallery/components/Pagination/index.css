@@ -1,0 +1,23 @@
+.pagination {
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 36px;
+    background-color: rgb(39, 40, 34);
+}
+
+.pagination .page {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+    margin: 2px;
+    padding: 5px;
+
+    min-height: 20px;
+    min-width: 22px;
+
+    background-color: white;
+    border: 1px solid black;
+    cursor: pointer;
+    border-radius: 4px;
+}
