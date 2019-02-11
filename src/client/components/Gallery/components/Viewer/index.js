@@ -7,7 +7,7 @@ import './index.css';
 
 
 export default ({ item: { _source }, close }) => (
-  <Dialog open={true} onClose={close} aria-labelledby="simple-dialog-title" maxWidth={'100vw'}>
+  <Dialog open={true} onClose={close} aria-labelledby="simple-dialog-title" maxWidth={false} style={{width: '100vw'}}>
     <DialogTitle style={{ padding: 0 }}>
       <div className="header">
         <img src={_source.img_url}/>
