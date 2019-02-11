@@ -2,23 +2,46 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import './index.css';
+import Search from './components/Search'
+import List from './components/List'
+
+import _ from 'underscore'
 
 // import Viewer from './components/Viewer/index';
-import List from './components/List'
+import './index.css';
 
 class Gallery extends Component {
   state = {
-    query: ''
+    json: null,
+    query: '',
+    loading: false
   };
+
+  constructor(props) {
+    super(props);
+
+    this.getjson = _.debounce(this.props.getjson, 1700);
+  }
 
   // todo: to know what sence of shapshot argument
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { query: newQuery } = prevState;
-    const { query: oldQuery } = this.state;
+    const { query: oldQuery } = prevState;
+    const { query: newQuery } = this.state;
 
-    if (newQuery !== oldQuery) {
-      this.props.getjson(newQuery);
+    if (newQuery === '') {
+      this.setState({ json: null, loading: false });
+    } else if (newQuery !== oldQuery) {
+      this.setState({ json: null, loading: newQuery }, () => {
+        this.getjson(newQuery);
+      });
+    }
+
+
+    const { json: newJson } = this.props;
+    const { loading } = this.state;
+
+    if (newJson && loading === newJson.q) {
+      this.setState({ json: newJson, loading: false });
     }
   }
 
@@ -31,15 +54,16 @@ class Gallery extends Component {
   };
 
   render() {
-    const { json } = this.props;
+    const { json, query, loading } = this.state;
 
     return (
       <div className="gallery">
-        <input type="text"
-               value={this.state.query}
-               onChange={(e) => this.setState({ query: e.target.value })}
-        />
-        <List json={json} select={(id) => this.onSelect(id)}/>
+        <Search query={query} change={(query) => this.setState({ query })} />
+        {
+          loading
+            ? (<div>Loading...</div>)
+            : (<List json={json} select={(id) => this.onSelect(id)}/>)
+        }
       </div>
     );
   }

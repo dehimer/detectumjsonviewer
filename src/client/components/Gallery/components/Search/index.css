@@ -1,0 +1,21 @@
+.search {
+    display: flex;
+    flex: 0 0 34px;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    background-color: #ccc;
+}
+
+.search .arrow {
+    position: absolute;
+    left: 0;
+    font-size: 35px;
+}
+
+.search .input {
+    flex: 1;
+    padding-left: 20px;
+    font-size: 20px;
+    border-radius: 2px;
+}
