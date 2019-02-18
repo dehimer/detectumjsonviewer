@@ -44,6 +44,7 @@ can.on('json:sync', (socket = io, { query, offset, limit }) => {
     }, (err, httpResponse, body) => {
       if (err) {
         console.error('JSON: Request failed:', err, body);
+        socket.emit('action', { type: 'json', data: null });
       } else {
         const data = JSON.parse(body);
         socket.emit('action', { type: 'json', data });

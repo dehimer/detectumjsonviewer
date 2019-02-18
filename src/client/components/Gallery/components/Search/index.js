@@ -13,7 +13,7 @@ export default class Search extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.query !== nextProps.query) {
-      this.setState({ query: nextProps.query });
+      this.setState({ query:  nextProps.query });
     }
   }
 
@@ -37,7 +37,7 @@ export default class Search extends PureComponent {
         icon={<SearchIcon />}
         value={query}
         onKeyPress={(e) => this.onKeyPress(e)}
-        onChange={(value) => this.setState({ query: value })}
+        onChange={(value) => this.setState({ query: value.replace(/[^-a-zA-Z0-9 ]/g, '') })}
         floating={false}
       />
     )

@@ -36,9 +36,7 @@ class Gallery extends Component {
     const { query: oldQuery, offset: oldOffset } = prevState;
     const { query: newQuery, offset: newOffset } = this.state;
 
-    if (newQuery === '' && oldQuery !== '') {
-      this.setState({ json: null, loading: false });
-    } else if (newQuery !== oldQuery || oldOffset !== newOffset) {
+    if (newQuery !== oldQuery || oldOffset !== newOffset) {
       const { offset, limit } = this.state;
 
       const state = {
