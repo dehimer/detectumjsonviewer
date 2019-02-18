@@ -2,9 +2,7 @@ import React from 'react';
 import ReactJson from 'react-json-view'
 
 import Dialog from 'react-toolbox/lib/dialog';
-// import FontIcon from 'react-toolbox/lib/font_icon';
 import CloseIcon from 'mdi-react/CloseIcon'
-
 
 import styles from './index.css';
 

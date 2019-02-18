@@ -18,6 +18,7 @@ export default ({ json, offset, limit, change }) => {
   if (!hits) return null;
 
   const currentPage = offset/limit;
+  console.log(`currentPage: ${currentPage}`);
 
   const { total } = hits;
   let pagesCount = parseInt(total/limit);
@@ -40,7 +41,7 @@ export default ({ json, offset, limit, change }) => {
       rangeLeftButtonLabel={(<MoreHorizIcon />)}
       rangeRightButtonLabel={(<MoreHorizIcon />)}
 
-      onPageChange={({selected})=>change(selected)}
+      onPageChange={({selected}) => change(selected)}
 
       pageCount={pagesCount}
       initialPage={currentPage}

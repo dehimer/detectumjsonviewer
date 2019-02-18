@@ -12,18 +12,19 @@
     justify-content: center;
     align-content: center;
 
-    margin: 2px;
     padding: 5px;
+    margin: 0 2px;
 
-    height: 20px;
+    height: 22px;
     min-width: 22px;
 
     color: white;
-    border: 1px solid white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     cursor: pointer;
     border-radius: 4px;
 
     outline: none;
+    user-select: none;
 }
 
 .activePage {

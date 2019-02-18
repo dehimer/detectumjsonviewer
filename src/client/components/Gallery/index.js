@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import _ from 'underscore'
+
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './index.css'
@@ -7,11 +9,11 @@ import styles from './index.css'
 import { ProgressBar, AppBar } from 'react-toolbox/lib';
 
 import Search from './components/Search'
+import Stats from './components/Stats'
 import List from './components/List'
 import Viewer from './components/Viewer';
 import Pagination from './components/Pagination';
 
-import _ from 'underscore'
 
 
 
@@ -21,7 +23,7 @@ class Gallery extends Component {
     query: '',
     loading: false,
     offset: 0,
-    limit: 100
+    limit: 30
   };
 
   constructor(props) {
@@ -49,6 +51,8 @@ class Gallery extends Component {
 
       if (newQuery !== oldQuery) {
         delete state.json;
+        state.offset = 0;
+        state.loading.offset = 0;
       }
 
       this.setState(state, () => {
@@ -114,7 +118,12 @@ class Gallery extends Component {
           {
             loading
               ? <ProgressBar type="linear" mode="indeterminate" multicolor={true} />
-              : <List json={json} select={(id) => this.onSelect(id)} />
+              : (
+                <Fragment>
+                  <Stats json={json} />
+                  <List json={json} select={(id) => this.onSelect(id)} />
+                </Fragment>
+              )
           }
 
           {
