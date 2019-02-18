@@ -1,17 +1,17 @@
 import React from 'react';
-import { TextField } from '@material-ui/core'
+import Input from 'react-toolbox/lib/input';
+import SearchIcon from 'mdi-react/SearchIcon'
 
-import './index.css'
+import styles from './index.css'
+
 
 export default ({ query, change }) => (
-  <TextField
-    className="search"
-    label="Поиск"
-    helperText="Введите поисковый запрос"
+  <Input
+    className={styles.search}
+    type='text'
+    label='Поиск'
+    icon={<SearchIcon />}
     value={query}
-    onChange={(e) => change(e.target.value)}
-    margin="none"
-    variant="filled"
-    fullWidth={true}
+    onChange={(value) => change(value)}
   />
 )

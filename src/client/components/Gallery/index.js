@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import styles from './index.css'
 
-import { CircularProgress } from '@material-ui/core';
+
+import { ProgressBar, AppBar } from 'react-toolbox/lib';
 
 import Search from './components/Search'
 import List from './components/List'
@@ -11,7 +13,7 @@ import Pagination from './components/Pagination';
 
 import _ from 'underscore'
 
-import './index.css';
+
 
 class Gallery extends Component {
   state = {
@@ -25,7 +27,7 @@ class Gallery extends Component {
   constructor(props) {
     super(props);
 
-    this.getjson = _.debounce(this.props.getjson, 700);
+    this.getjson = _.debounce(this.props.getjson, 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -36,14 +38,20 @@ class Gallery extends Component {
       this.setState({ json: null, loading: false });
     } else if (newQuery !== oldQuery || oldOffset !== newOffset) {
       const { offset, limit } = this.state;
-      this.setState({
-        json: null,
+
+      const state = {
         loading: {
           query: newQuery,
           offset: newOffset
         },
         offset: newOffset
-      }, () => {
+      };
+
+      if (newQuery !== oldQuery) {
+        delete state.json;
+      }
+
+      this.setState(state, () => {
         this.getjson({ query: newQuery, offset, limit });
       });
     }
@@ -59,6 +67,18 @@ class Gallery extends Component {
         this.setState({ json: newJson, loading: false });
       }
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    const { json: curJson, ...restCurState } = this.state;
+    const { json: newJson, ...restNewState } = nextState;
+
+    if (curJson !== newJson) return true;
+    if (JSON.stringify(restCurState) !== JSON.stringify(restNewState)) return true;
+
+    if (this.props.json !== nextProps.json) return true;
+
+    return false;
   }
 
   onSelect = (id) => {
@@ -83,26 +103,35 @@ class Gallery extends Component {
     } = this.state;
 
     return (
-      <div className="gallery">
-        <Search query={query} change={(query) => this.setState({ query })} />
-        {
-          loading
-            ? (<div className="loading"><CircularProgress/></div>)
-            : (<List json={json} select={(id) => this.onSelect(id)}/>)
-        }
+      <div className={styles.gallery}>
+        <AppBar className={styles.top}>
+          <Search
+            query={query}
+            change={(query) => this.setState({ query })}
+          />
+        </AppBar>
+        <div className={styles.content}>
+          {
+            loading
+              ? <ProgressBar type="linear" mode="indeterminate" multicolor={true} />
+              : <List json={json} select={(id) => this.onSelect(id)} />
+          }
 
-        {
-          item
-            ? <Viewer item={item} close={() => this.setState({ item: null })} />
-            : null
-        }
+          {
+            item
+              ? <Viewer item={item} close={() => this.setState({ item: null })} />
+              : null
+          }
+        </div>
 
-        <Pagination
-          json={json}
-          offset={offset}
-          limit={limit}
-          change={(page) => this.setState({ offset: page * limit })}
-        />
+        <div className={styles.bottom}>
+          <Pagination
+            json={json}
+            offset={offset}
+            limit={limit}
+            change={(page) => this.setState({ offset: page * limit })}
+          />
+        </div>
       </div>
     );
   }

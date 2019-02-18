@@ -1,3 +1,8 @@
 .search {
-    flex: 0 0 auto;
+    flex: 1;
+    color: white;
+}
+
+.search input {
+    color: white;
 }

@@ -1,6 +1,12 @@
 import React from "react";
 
-import './index.css'
+import ReactPaginate from 'react-paginate';
+
+import ChevronLeftIcon from 'mdi-react/ChevronLeftIcon'
+import ChevronRightIcon from 'mdi-react/ChevronRightIcon'
+import MoreHorizIcon from 'mdi-react/MoreHorizIcon'
+
+import styles from './index.css'
 
 export default ({ json, offset, limit, change }) => {
   if (!json) return null;
@@ -16,22 +22,31 @@ export default ({ json, offset, limit, change }) => {
   const { total } = hits;
   let pagesCount = parseInt(total/limit);
   if (pagesCount*limit < total) pagesCount += 1;
-  const pages = [...Array(pagesCount).keys()];
 
   return (
-    <div className="pagination">
-      {
-        pages.map(page => (
-          <div
-            key={page}
-            className="page"
-            onClick={() => change(page)}
-          >
-            { currentPage === page ? `[${page+1}]` : page+1 }
-          </div>
-        ))
-      }
-    </div>
+    <ReactPaginate
+      containerClassName={styles.pagination}
+      pageClassName={styles.page}
+
+      previousClassName={styles.page}
+      nextClassName={styles.page}
+      activeClassName={styles.activePage}
+      breakClassName={styles.page}
+
+      previousLabel={<ChevronLeftIcon />}
+      nextLabel={<ChevronRightIcon />}
+
+
+      rangeLeftButtonLabel={(<MoreHorizIcon />)}
+      rangeRightButtonLabel={(<MoreHorizIcon />)}
+
+      onPageChange={({selected})=>change(selected)}
+
+      pageCount={pagesCount}
+      initialPage={currentPage}
+      pageRangeDisplayed={10}
+      marginPagesDisplayed={2}
+    />
   )
 }
 

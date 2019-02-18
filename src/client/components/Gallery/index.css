@@ -5,9 +5,25 @@
     height: 100vh;
 }
 
-.gallery .loading {
+.loading {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.top {
+    height: 40px;
+}
+
+.content {
+    display: flex;
+    height: 100%;
+}
+
+.bottom {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    background-color: rgb(39, 40, 34);
 }

@@ -1,10 +1,10 @@
 import React from "react";
 
-import './index.css'
+import styles from './index.css'
 
 export default ({ json, select }) => {
   const noresultsEl = (
-    <div className="no-results">
+    <div className={styles.noResults}>
       No Results
     </div>
   );
@@ -21,7 +21,7 @@ export default ({ json, select }) => {
   if (!items || items.length === 0) return noresultsEl;
 
   return (
-    <div className="list">
+    <div className={styles.list}>
     {
       items.map(hit => {
         const { _source } = hit;
@@ -29,7 +29,7 @@ export default ({ json, select }) => {
 
         return (
           <div
-            className='item' key={id}
+            className={styles.item} key={id}
             onClick={() => select(id)}
           >
             <img src={img_url}/>
