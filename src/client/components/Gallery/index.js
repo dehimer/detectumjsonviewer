@@ -50,7 +50,7 @@ class Gallery extends Component {
       };
 
       if (newQuery !== oldQuery) {
-        delete state.json;
+        state.json = null;
         state.offset = 0;
         state.loading.offset = 0;
       }

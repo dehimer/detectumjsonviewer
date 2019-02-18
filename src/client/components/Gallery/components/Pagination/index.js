@@ -18,7 +18,6 @@ export default ({ json, offset, limit, change }) => {
   if (!hits) return null;
 
   const currentPage = offset/limit;
-  console.log(`currentPage: ${currentPage}`);
 
   const { total } = hits;
   let pagesCount = parseInt(total/limit);
