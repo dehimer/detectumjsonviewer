@@ -11,15 +11,25 @@
 
 .header {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: flex-start;
 
     flex: 0 0 40px;
 }
 
+.headerLeftPart {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 .header img {
     max-height: 20px;
     border-radius: 5px;
+}
+
+.close {
+    cursor: pointer;
 }
 
 .name {
@@ -33,3 +43,4 @@
     flex: 1;
     overflow-y: scroll;
 }
+

@@ -5,7 +5,7 @@ import styles from './index.css'
 export default ({ json, select }) => {
   const noresultsEl = (
     <div className={styles.noResults}>
-      No Results
+      Ничего не найдено
     </div>
   );
 
