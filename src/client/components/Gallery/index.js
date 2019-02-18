@@ -27,7 +27,7 @@ class Gallery extends Component {
   constructor(props) {
     super(props);
 
-    this.getjson = _.debounce(this.props.getjson, 1000);
+    this.getjson = _.debounce(this.props.getjson, 700);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -107,7 +107,7 @@ class Gallery extends Component {
         <AppBar className={styles.top}>
           <Search
             query={query}
-            change={(query) => this.setState({ query })}
+            search={(query) => this.setState({ query })}
           />
         </AppBar>
         <div className={styles.content}>
