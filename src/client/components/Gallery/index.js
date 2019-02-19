@@ -19,9 +19,10 @@ class Gallery extends Component {
   state = {
     json: null,
     query: '',
+    categories: [],
     loading: false,
     offset: 0,
-    limit: 30
+    limit: 32
   };
 
   constructor(props) {
@@ -51,6 +52,7 @@ class Gallery extends Component {
         state.json = null;
         state.offset = 0;
         state.loading.offset = 0;
+        state.categories = [];
       }
 
       this.setState(state, () => {
@@ -99,9 +101,23 @@ class Gallery extends Component {
     this.setState({ item });
   };
 
+  toggleCategory(category) {
+    let { categories } = this.state;
+
+    if (categories.includes(category)) {
+      categories = categories.filter(cat => cat !== category)
+    } else {
+      categories.push(category);
+    }
+
+    console.log('newCategories');
+    console.log(categories);
+    this.setState({ categories });
+  }
+
   render() {
     const {
-      json, query, loading, item, offset, limit
+      json, query, loading, categories, item, offset, limit
     } = this.state;
 
     return (
@@ -120,8 +136,12 @@ class Gallery extends Component {
                 <Fragment>
                   <Stats json={json} />
                   <div className={styles.fx}>
+                    <Aggregations
+                      json={json}
+                      categories={categories}
+                      select={(category) => this.toggleCategory(category)}
+                    />
                     <List json={json} select={(id) => this.onSelect(id)} />
-                    <Aggregations />
                   </div>
                 </Fragment>
               )
