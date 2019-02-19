@@ -37,7 +37,7 @@ export default class Search extends PureComponent {
         icon={<SearchIcon />}
         value={query}
         onKeyPress={(e) => this.onKeyPress(e)}
-        onChange={(value) => this.setState({ query: value.replace(/[^-a-zA-Z0-9 ]/g, '') })}
+        onChange={(value) => this.setState({ query: value })}
         floating={false}
       />
     )
