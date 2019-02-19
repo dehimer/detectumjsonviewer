@@ -28,3 +28,9 @@
     height: 40px;
     background-color: rgb(39, 40, 34);
 }
+
+.fx {
+    display: flex;
+    align-content: stretch;
+    flex: 1;
+}

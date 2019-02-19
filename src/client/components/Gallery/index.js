@@ -10,6 +10,7 @@ import { ProgressBar, AppBar } from 'react-toolbox/lib';
 import Search from './components/Search'
 import Stats from './components/Stats'
 import List from './components/List'
+import Aggregations from './components/Aggregations'
 import Viewer from './components/Viewer';
 import Pagination from './components/Pagination';
 
@@ -118,7 +119,10 @@ class Gallery extends Component {
               : (
                 <Fragment>
                   <Stats json={json} />
-                  <List json={json} select={(id) => this.onSelect(id)} />
+                  <div className={styles.fx}>
+                    <List json={json} select={(id) => this.onSelect(id)} />
+                    <Aggregations />
+                  </div>
                 </Fragment>
               )
           }
