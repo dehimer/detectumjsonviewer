@@ -38,16 +38,17 @@ io.on('connection', (socket) => {
 
 can.on('json:sync', (socket = io, { query, offset, limit }) => {
   if (query) {
-    const url = `${config.searchUrl}?q=${query}&id2name=true&getrawoutput&debug=true&explain=true&offset=${offset}&limit=${limit}`;
+    const url = `${config.searchUrl}?q=${encodeURIComponent(query)}&id2name=true&getrawoutput&debug=true&explain=true&offset=${offset}&limit=${limit}`;
+    console.log(url);
     request.get({
       url,
+      json: true,
     }, (err, httpResponse, body) => {
       if (err) {
         console.error('JSON: Request failed:', err, body);
         socket.emit('action', { type: 'json', data: null });
       } else {
-        const data = JSON.parse(body);
-        socket.emit('action', { type: 'json', data });
+        socket.emit('action', { type: 'json', data: body });
       }
     });
   }
