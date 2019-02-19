@@ -4,5 +4,8 @@
 }
 
 .search input {
-    color: white;
+    background: white;
+    border-radius: 3px;
+    color: black;
+    padding-left: 7px;
 }
