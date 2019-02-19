@@ -25,15 +25,23 @@ export default ({ json, select }) => {
     {
       items.map(hit => {
         const { _source } = hit;
-        const { id, img_url, model } = _source;
+        const { id, img_url, model, price } = _source;
 
         return (
           <div
             className={styles.item} key={id}
-            onClick={() => select(id)}
           >
-            <img src={img_url}/>
-            <div>{model}</div>
+            <div
+              className={styles.itemContent}
+              onClick={() => select(id)}
+            >
+              <img src={img_url}/>
+              <div className={styles.legend}>
+                <div className={styles.model}>{model}</div>
+                <div className={styles.id}>{id}</div>
+                <div className={styles.price}>{price} Р</div>
+              </div>
+            </div>
           </div>
         );
       })
