@@ -7,13 +7,17 @@
 
     width: 300px;
     overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.group {
+    margin: 2px;
 }
 
 .category {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 2px;
     padding: pad;
 
     background-color: white;

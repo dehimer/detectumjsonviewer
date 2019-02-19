@@ -35,7 +35,7 @@ export default ({ json, categories, select }) => {
           const { NAME_VALUE: { buckets } } = VALUES_TO_PARAMS;
 
           return (
-            <div key={key}>
+            <div key={key} className={styles.group}>
               <div className={styles.category}>
                 <div className={styles.name}><b>{key}</b></div>
                 <div className={styles.count}>{doc_count}</div>
