@@ -36,18 +36,36 @@ io.on('connection', (socket) => {
   });
 });
 
-can.on('json:sync', (socket = io, { query, offset, limit }) => {
+can.on('json:sync', (socket = io, { query, offset, limit, categories }) => {
   if (query) {
-    const url = `${config.searchUrl}?q=${encodeURIComponent(query)}&id2name=true&getrawoutput&debug=true&explain=true&offset=${offset}&limit=${limit}`;
-    console.log(url);
+    const qs = {
+      q: encodeURIComponent(query),
+      id2name: true,
+      getrawoutput: true,
+      debug: true,
+      explain: true,
+      offset,
+      limit
+    };
+
+    if (categories.length) {
+      qs.category_id = encodeURIComponent(categories.join(','));
+    }
+
+    console.log(qs);
+
     request.get({
-      url,
+      url: config.searchUrl,
       json: true,
+      qs
     }, (err, httpResponse, body) => {
+      console.log(`${query} res`);
       if (err) {
         console.error('JSON: Request failed:', err, body);
         socket.emit('action', { type: 'json', data: null });
       } else {
+        console.log(body);
+        body.q = decodeURIComponent(body.q);
         socket.emit('action', { type: 'json', data: body });
       }
     });

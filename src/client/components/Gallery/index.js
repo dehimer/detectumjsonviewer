@@ -3,7 +3,6 @@ import _ from 'underscore'
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import styles from './index.css'
 
 import { ProgressBar, AppBar } from 'react-toolbox/lib';
 
@@ -14,12 +13,14 @@ import Aggregations from './components/Aggregations'
 import Viewer from './components/Viewer';
 import Pagination from './components/Pagination';
 
+import styles from './index.css'
 
 class Gallery extends Component {
   state = {
     json: null,
     query: '',
     categories: [],
+    params: [],
     loading: false,
     offset: 0,
     limit: 32
@@ -32,13 +33,17 @@ class Gallery extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { query: oldQuery, offset: oldOffset } = prevState;
-    const { query: newQuery, offset: newOffset } = this.state;
+    const { query: oldQuery, offset: oldOffset, categories: oldCategories } = prevState;
+    const { query: newQuery, offset: newOffset, categories: newCategories } = this.state;
 
     if (newQuery === '' && oldQuery !== '') {
       this.setState({ json: null, loading: false });
-    } else if (newQuery !== oldQuery || oldOffset !== newOffset) {
-      const { offset, limit } = this.state;
+    } else if (
+      newQuery !== oldQuery ||
+      oldOffset !== newOffset ||
+      oldCategories.length !== newCategories.length
+    ) {
+      const { offset, limit, categories } = this.state;
 
       const state = {
         loading: {
@@ -56,7 +61,9 @@ class Gallery extends Component {
       }
 
       this.setState(state, () => {
-        this.getjson({ query: newQuery, offset, limit });
+        console.log('getjson');
+        console.log({ query: newQuery, offset, limit, categories });
+        this.getjson({ query: newQuery, offset, limit, categories });
       });
     }
 
@@ -102,22 +109,37 @@ class Gallery extends Component {
   };
 
   toggleCategory(category) {
-    let { categories } = this.state;
+    console.log(`toggleCategory(${category})`);
+    const { categories } = this.state;
+    let newCategories = [];
 
     if (categories.includes(category)) {
-      categories = categories.filter(cat => cat !== category)
+      newCategories = categories.filter(cat => cat !== category)
     } else {
-      categories.push(category);
+      newCategories = categories.concat([category]);
     }
 
-    console.log('newCategories');
-    console.log(categories);
-    this.setState({ categories });
+    this.setState({ categories: newCategories });
+  }
+
+  toggleParam(param) {
+    console.log(`toggleParam(${param})`);
+    const { params } = this.state;
+    let newParams = [];
+
+    if (params.includes(param)) {
+      newParams = params.filter(p => p !== param)
+    } else {
+      newParams = params.concat([param]);
+    }
+
+    this.setState({ params: newParams });
   }
 
   render() {
+    console.log('render');
     const {
-      json, query, loading, categories, item, offset, limit
+      json, query, loading, categories, params, item, offset, limit
     } = this.state;
 
     return (
@@ -130,22 +152,23 @@ class Gallery extends Component {
         </AppBar>
         <div className={styles.content}>
           {
-            loading
-              ? <ProgressBar type="linear" mode="indeterminate" multicolor={true} />
-              : (
-                <Fragment>
-                  <Stats json={json} />
-                  <div className={styles.fx}>
-                    <Aggregations
-                      json={json}
-                      categories={categories}
-                      select={(category) => this.toggleCategory(category)}
-                    />
-                    <List json={json} select={(id) => this.onSelect(id)} />
-                  </div>
-                </Fragment>
-              )
+            loading ? <ProgressBar type="linear" mode="indeterminate" multicolor={true} /> : null
           }
+
+          <Stats json={json} />
+
+          <div className={styles.fx}>
+            <Aggregations
+              json={json}
+              selectedCategories={categories}
+              selectedParams={params}
+              selectCategory={(category) => this.toggleCategory(category)}
+              selectParam={(param) => this.toggleParam(param)}
+              lastlevel={true}
+            />
+
+            { !loading ? <List json={json} select={(id) => this.onSelect(id)} /> : null }
+          </div>
 
           {
             item
@@ -180,13 +203,14 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   {
-    getjson: ({query, offset, limit}) => {
+    getjson: ({query, offset, limit, categories}) => {
       dispatch({
         type: 'server/getjson',
         data: {
           query,
           offset,
-          limit
+          limit,
+          categories
         }
       });
     },

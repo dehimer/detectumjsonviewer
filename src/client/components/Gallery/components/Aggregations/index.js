@@ -1,55 +1,75 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import Checkbox from 'react-toolbox/lib/checkbox';
 
 import styles from './index.css'
 
-export default ({ json, categories, select }) => {
-  if (!json) return null;
+export default class Aggregations extends PureComponent {
+  state = {
+    availableCategories: [],
+    availableParams: []
+  };
 
-  console.log('json');
-  console.log(json);
+  static getDerivedStateFromProps(props) {
+    const { json } = props;
 
-  console.log('categories');
-  console.log(categories);
-  const {
-    es_response: {
-      aggregations: {
-        filtered_aggs: {
-          params: {
-            PARAM_NAMES: {
-              buckets
+    if (json) {
+      const {
+        es_response: {
+          aggregations: {
+            filtered_aggs: {
+              category_id: {
+                buckets: availableCategories
+              },
+              params: {
+                PARAM_NAMES: {
+                  buckets: availableParams
+                }
+              }
             }
           }
         }
+      } = json;
+
+      return {
+        availableCategories: availableCategories.map(category => {
+          const { id2name: { buckets } } = category;
+          category.buckets = buckets;
+          return category
+        }),
+        availableParams: availableParams.map(param => {
+          const { VALUES_TO_PARAMS: { NAME_VALUE: { buckets } } } = param;
+          param.buckets = buckets;
+          return param
+        })
       }
     }
-  } = json;
-  console.log('buckets');
-  console.log(buckets);
 
-  return (
-    <div className={styles.aggregations}>
-      {
-        buckets.map(({ key, doc_count, VALUES_TO_PARAMS }) => {
+    return null;
+  }
 
-          const { NAME_VALUE: { buckets } } = VALUES_TO_PARAMS;
+  render() {
+    const { selectedCategories, selectedParams, selectCategory, selectParam } = this.props;
+    const { availableCategories, availableParams } = this.state;
 
-          return (
+
+    return (
+      <div className={styles.aggregations}>
+        <div className={styles.group}>
+          <b>Категории</b>
+        </div>
+        {
+          availableCategories.map(({ key, doc_count, buckets }) => (
             <div key={key} className={styles.group}>
-              <div className={styles.category}>
-                <div className={styles.name}><b>{key}</b></div>
-                <div className={styles.count}>{doc_count}</div>
-              </div>
               {
                 buckets.map(({ key, doc_count }) => (
                   <div
                     key={key}
                     className={styles.category}
-                    onClick={() => select(key)}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); selectCategory(key) }}
                   >
                     <div className={styles.label}>
                       <Checkbox
-                        checked={categories.includes(key)}
+                        checked={selectedCategories.includes(key)}
                       />
                       <div className={styles.name}>{key}</div>
                     </div>
@@ -58,9 +78,42 @@ export default ({ json, categories, select }) => {
                 ))
               }
             </div>
-          )
-        })
-      }
-    </div>
-  )
+          ))
+        }
+
+        <div className={styles.group}>
+          <b>Параметры</b>
+        </div>
+        {
+          availableParams.map(({ key, doc_count, buckets }) => (
+            <div key={key} className={styles.group}>
+              <div className={styles.category}>
+                <div className={styles.name}><b>{key}</b></div>
+                <div className={styles.count}>{doc_count}</div>
+              </div>
+
+              {
+                buckets.map(({ key, doc_count }) => (
+                  <div
+                    key={key}
+                    className={styles.category}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); selectParam(key) }}
+                  >
+                    <div className={styles.label}>
+                      <Checkbox
+                        checked={selectedParams.includes(key)}
+                      />
+                      <div className={styles.name}>{key}</div>
+                    </div>
+                    <div className={styles.count}>{doc_count}</div>
+                  </div>
+                ))
+              }
+            </div>
+          ))
+        }
+      </div>
+    )
+
+  }
 }
