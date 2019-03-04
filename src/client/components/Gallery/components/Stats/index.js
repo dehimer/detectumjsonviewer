@@ -16,6 +16,7 @@ export default class Stats extends Component {
     const { json } = nextProps;
 
     if (!json) return null;
+    if (!json.es_response) return null;
 
     const {
       q: query,

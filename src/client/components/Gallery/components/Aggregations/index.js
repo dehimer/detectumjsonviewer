@@ -10,6 +10,8 @@ export default class Aggregations extends PureComponent {
   };
 
   static getDerivedStateFromProps(props) {
+    console.log('getDerivedStateFromProps');
+    console.log(props);
     const { json } = props;
 
     if (json && json.es_response) {
@@ -66,6 +68,9 @@ export default class Aggregations extends PureComponent {
     const { selectedCategories, currentParams, selectCategory, selectParam } = this.props;
     const { availableCategories, availableParams } = this.state;
 
+    console.log('currentParams');
+    console.log(currentParams);
+
     return (
       <div className={styles.aggregations}>
         <div className={styles.group}>
@@ -108,7 +113,8 @@ export default class Aggregations extends PureComponent {
 
               {
                 buckets.map(({ key, doc_count }) => {
-                  const checked = currentParams[param] === key;
+                  const checked = !!currentParams.find(p => p.name === param && p.value === key);
+
                   return (
                     <div
                       key={key}
@@ -116,7 +122,7 @@ export default class Aggregations extends PureComponent {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        selectParam({name: param, value: checked ? null : key})
+                        selectParam({name: param, value: key})
                       }}
                     >
                       <div className={styles.label}>

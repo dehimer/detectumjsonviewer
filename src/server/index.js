@@ -26,6 +26,8 @@ io.attach(server);
 
 io.on('connection', (socket) => {
   socket.on('action', (action) => {
+    console.log('action');
+    console.log(action);
     const { type, data } = action;
     switch (type) {
       case 'server/getjson':
@@ -50,26 +52,20 @@ can.on('json:sync', (socket = io, { tsid, query, offset, limit, categories, para
 
     if (categories.length) {
       qs.category_id = encodeURIComponent(categories.join(','));
-      // qs.params = 0;
     }
 
-    console.log('params');
-    console.log(params);
-    if (Object.keys(params).length) {
+    qs.params = params.length;
+    if (params.length) {
       // console.log(params);
       // qs.category_id = encodeURIComponent(categories.join(','));
       // qs.params = 0;
 
-      Object.entries(params).forEach(([key, value], index) => {
-        // console.log(`${index}: ${key} = ${value}`);
-        qs[`param_${index}`] = key;
-        qs[`value_${index}`] = value;
+      params.forEach((param, index) => {
+        qs[`param_${index}`] = param.name;
+        qs[`value_${index}`] = param.value;
       });
 
       // param_1=vendor&value_1=Disney
-      qs.params = 1;
-    } else {
-      qs.params = 0;
     }
 
     console.log(tsid);

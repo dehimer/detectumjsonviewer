@@ -94,7 +94,7 @@ class Gallery extends PureComponent {
           offset: state.offset,
           limit,
           categories: state.categories,
-          params: state.params
+          params: state.params,
         });
       })
     }
@@ -129,22 +129,17 @@ class Gallery extends PureComponent {
     this.setState({ categories: [...categories] });
   }
 
-  setParam({name, value}) {
-    console.log(`setParam(${name}, ${value})`);
-    const { params } = this.state;
-    params[name] = value;
+  toggleParam({name, value}) {
+    console.log(`toggleParam(${name}, ${value})`);
+    let { params } = this.state;
 
-    // if (params[name]) {
-    //
-    // }
+    if (params.find(param => param.name === name && param.value === value)) {
+      params = params.filter(param => !(param.name === name && param.value === value));
+    } else {
+      params = params.concat([{name, value}]);
+    }
 
-    // if (params.includes(param)) {
-    //   params = params.filter(p => p !== param)
-    // } else {
-    //   params = params.concat([param]);
-    // }
-
-    this.setState({ params: {...params} });
+    this.setState({ params: [...params] });
   }
 
   render() {
@@ -173,7 +168,7 @@ class Gallery extends PureComponent {
               selectedCategories={categories}
               currentParams={params}
               selectCategory={(category) => this.toggleCategory(category)}
-              selectParam={(param) => this.setParam(param)}
+              selectParam={(param) => this.toggleParam(param)}
               lastlevel={true}
             />
 
