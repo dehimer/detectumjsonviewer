@@ -12,23 +12,38 @@ export default class Aggregations extends PureComponent {
   static getDerivedStateFromProps(props) {
     const { json } = props;
 
-    if (json) {
+    if (json && json.es_response) {
       const {
         es_response: {
-          aggregations: {
-            filtered_aggs: {
-              category_id: {
-                buckets: availableCategories
-              },
-              params: {
-                PARAM_NAMES: {
-                  buckets: availableParams
-                }
-              }
-            }
-          }
+          aggregations
         }
       } = json;
+
+      let {
+        filtered_aggs: {
+          category_id: {
+            buckets: availableCategories
+          },
+          params: {
+            PARAM_NAMES: {
+              buckets: availableParams
+            }
+          }
+        },
+        category_id
+      } = aggregations;
+
+      // if (category_id) {
+      //   const {
+      //     category_id: {
+      //       buckets
+      //     }
+      //   } = category_id;
+      //
+      //   availableCategories = buckets;
+      // }
+
+
 
       return {
         availableCategories: availableCategories.map(category => {
@@ -48,9 +63,8 @@ export default class Aggregations extends PureComponent {
   }
 
   render() {
-    const { selectedCategories, selectedParams, selectCategory, selectParam } = this.props;
+    const { selectedCategories, currentParams, selectCategory, selectParam } = this.props;
     const { availableCategories, availableParams } = this.state;
-
 
     return (
       <div className={styles.aggregations}>
@@ -58,18 +72,18 @@ export default class Aggregations extends PureComponent {
           <b>Категории</b>
         </div>
         {
-          availableCategories.map(({ key, doc_count, buckets }) => (
-            <div key={key} className={styles.group}>
+          availableCategories.map(({ key: categoryId, doc_count, buckets }) => (
+            <div key={categoryId} className={styles.group}>
               {
                 buckets.map(({ key, doc_count }) => (
                   <div
                     key={key}
                     className={styles.category}
-                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); selectCategory(key) }}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); selectCategory(categoryId) }}
                   >
                     <div className={styles.label}>
                       <Checkbox
-                        checked={selectedCategories.includes(key)}
+                        checked={selectedCategories.includes(categoryId)}
                       />
                       <div className={styles.name}>{key}</div>
                     </div>
@@ -85,29 +99,36 @@ export default class Aggregations extends PureComponent {
           <b>Параметры</b>
         </div>
         {
-          availableParams.map(({ key, doc_count, buckets }) => (
-            <div key={key} className={styles.group}>
+          availableParams.map(({ key: param, doc_count, buckets }) => (
+            <div key={param} className={styles.group}>
               <div className={styles.category}>
-                <div className={styles.name}><b>{key}</b></div>
+                <div className={styles.name}><b>{param}</b></div>
                 <div className={styles.count}>{doc_count}</div>
               </div>
 
               {
-                buckets.map(({ key, doc_count }) => (
-                  <div
-                    key={key}
-                    className={styles.category}
-                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); selectParam(key) }}
-                  >
-                    <div className={styles.label}>
-                      <Checkbox
-                        checked={selectedParams.includes(key)}
-                      />
-                      <div className={styles.name}>{key}</div>
+                buckets.map(({ key, doc_count }) => {
+                  const checked = currentParams[param] === key;
+                  return (
+                    <div
+                      key={key}
+                      className={styles.category}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        selectParam({name: param, value: checked ? null : key})
+                      }}
+                    >
+                      <div className={styles.label}>
+                        <Checkbox
+                          checked={checked}
+                        />
+                        <div className={styles.name}>{key}</div>
+                      </div>
+                      <div className={styles.count}>{doc_count}</div>
                     </div>
-                    <div className={styles.count}>{doc_count}</div>
-                  </div>
-                ))
+                  )
+                })
               }
             </div>
           ))

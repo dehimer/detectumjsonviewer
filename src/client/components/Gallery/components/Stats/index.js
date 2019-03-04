@@ -13,9 +13,6 @@ export default class Stats extends Component {
   state = defaultState;
 
   static getDerivedStateFromProps(nextProps, curState) {
-    console.log('getDerivedStateFromProps');
-    console.log(nextProps);
-
     const { json } = nextProps;
 
     if (!json) return null;
@@ -26,7 +23,6 @@ export default class Stats extends Component {
       stat: { start }
     } = json;
 
-    console.log(`${curState.start} === ${start}`);
     if (curState.start === start) return null;
 
     const newState = {
@@ -35,9 +31,6 @@ export default class Stats extends Component {
       spend: parseInt((new Date())*1 - start*1000),
       start
     };
-
-    console.log('newState');
-    console.log(newState);
 
     if (JSON.stringify(newState) !== JSON.stringify(curState)) {
       return newState;
@@ -50,11 +43,7 @@ export default class Stats extends Component {
     return (JSON.stringify(nextState) !== JSON.stringify(this.state));
   }
 
-
-
   render() {
-    console.log('render Stats');
-    console.log(this.state);
     const { json } = this.props;
     if (!json) return null;
 

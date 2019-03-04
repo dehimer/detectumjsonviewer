@@ -1,6 +1,6 @@
 import _ from 'underscore'
 
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -15,7 +15,7 @@ import Pagination from './components/Pagination';
 
 import styles from './index.css'
 
-class Gallery extends Component {
+class Gallery extends PureComponent {
   state = {
     json: null,
     query: '',
@@ -26,6 +26,18 @@ class Gallery extends Component {
     limit: 32
   };
 
+  static getDerivedStateFromProps(props, state) {
+    const { json } = props;
+    if ( json && state.tsid === json.tsid) {
+      return {
+        json,
+        loading: false
+      }
+    }
+
+    return null;
+  }
+
   constructor(props) {
     super(props);
 
@@ -33,63 +45,59 @@ class Gallery extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { query: oldQuery, offset: oldOffset, categories: oldCategories } = prevState;
-    const { query: newQuery, offset: newOffset, categories: newCategories } = this.state;
+    const {
+      query: oldQuery,
+      offset: oldOffset,
+      categories: oldCategories,
+      params: oldParams
+    } = prevState;
 
-    if (newQuery === '' && oldQuery !== '') {
-      this.setState({ json: null, loading: false });
-    } else if (
-      newQuery !== oldQuery ||
-      oldOffset !== newOffset ||
-      oldCategories.length !== newCategories.length
-    ) {
-      const { offset, limit, categories } = this.state;
+    const {
+      query: newQuery,
+      offset: newOffset,
+      categories: newCategories,
+      params: newParams,
+      limit
+    } = this.state;
 
+    let needQuery = false;
+    if (oldQuery !== newQuery) {
+      needQuery = true;
+    } else if (oldOffset !== newOffset) {
+      needQuery = true;
+    } else if (oldCategories.length !== newCategories.length) {
+      needQuery = true;
+    } else if (oldParams.length !== newParams.length) {
+      needQuery = true;
+    }
+
+    if (needQuery) {
       const state = {
-        loading: {
-          query: newQuery,
-          offset: newOffset
-        },
-        offset: newOffset
+        tsid: +(new Date()),
+        json: null,
+        loading: true,
+        offset: newOffset,
+        categories: newCategories,
+        params: newParams,
       };
 
-      if (newQuery !== oldQuery) {
-        state.json = null;
+      if (oldQuery !== newQuery) {
         state.offset = 0;
-        state.loading.offset = 0;
         state.categories = [];
+        state.params = [];
       }
 
       this.setState(state, () => {
-        console.log('getjson');
-        console.log({ query: newQuery, offset, limit, categories });
-        this.getjson({ query: newQuery, offset, limit, categories });
-      });
+        this.getjson({
+          tsid: state.tsid,
+          query: newQuery,
+          offset: state.offset,
+          limit,
+          categories: state.categories,
+          params: state.params
+        });
+      })
     }
-
-
-    const { json: newJson } = this.props;
-    const { loading, offset, limit } = this.state;
-
-    if (newJson && loading) {
-      const {q: query, req: { size, from }} = newJson;
-
-      if (loading.query === query && offset === from*1 && limit === size*1) {
-        this.setState({ json: newJson, loading: false });
-      }
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
-    const { json: curJson, ...restCurState } = this.state;
-    const { json: newJson, ...restNewState } = nextState;
-
-    if (curJson !== newJson) return true;
-    if (JSON.stringify(restCurState) !== JSON.stringify(restNewState)) return true;
-
-    if (this.props.json !== nextProps.json) return true;
-
-    return false;
   }
 
   onSelect = (id) => {
@@ -110,34 +118,36 @@ class Gallery extends Component {
 
   toggleCategory(category) {
     console.log(`toggleCategory(${category})`);
-    const { categories } = this.state;
-    let newCategories = [];
+    let { categories } = this.state;
 
     if (categories.includes(category)) {
-      newCategories = categories.filter(cat => cat !== category)
+      categories = categories.filter(cat => cat !== category)
     } else {
-      newCategories = categories.concat([category]);
+      categories = categories.concat([category]);
     }
 
-    this.setState({ categories: newCategories });
+    this.setState({ categories: [...categories] });
   }
 
-  toggleParam(param) {
-    console.log(`toggleParam(${param})`);
+  setParam({name, value}) {
+    console.log(`setParam(${name}, ${value})`);
     const { params } = this.state;
-    let newParams = [];
+    params[name] = value;
 
-    if (params.includes(param)) {
-      newParams = params.filter(p => p !== param)
-    } else {
-      newParams = params.concat([param]);
-    }
+    // if (params[name]) {
+    //
+    // }
 
-    this.setState({ params: newParams });
+    // if (params.includes(param)) {
+    //   params = params.filter(p => p !== param)
+    // } else {
+    //   params = params.concat([param]);
+    // }
+
+    this.setState({ params: {...params} });
   }
 
   render() {
-    console.log('render');
     const {
       json, query, loading, categories, params, item, offset, limit
     } = this.state;
@@ -161,9 +171,9 @@ class Gallery extends Component {
             <Aggregations
               json={json}
               selectedCategories={categories}
-              selectedParams={params}
+              currentParams={params}
               selectCategory={(category) => this.toggleCategory(category)}
-              selectParam={(param) => this.toggleParam(param)}
+              selectParam={(param) => this.setParam(param)}
               lastlevel={true}
             />
 
@@ -203,15 +213,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   {
-    getjson: ({query, offset, limit, categories}) => {
+    getjson: (data) => {
       dispatch({
         type: 'server/getjson',
-        data: {
-          query,
-          offset,
-          limit,
-          categories
-        }
+        data
       });
     },
   }

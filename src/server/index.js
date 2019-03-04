@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
   });
 });
 
-can.on('json:sync', (socket = io, { query, offset, limit, categories }) => {
+can.on('json:sync', (socket = io, { tsid, query, offset, limit, categories, params }) => {
   if (query) {
     const qs = {
       q: encodeURIComponent(query),
@@ -50,8 +50,29 @@ can.on('json:sync', (socket = io, { query, offset, limit, categories }) => {
 
     if (categories.length) {
       qs.category_id = encodeURIComponent(categories.join(','));
+      // qs.params = 0;
     }
 
+    console.log('params');
+    console.log(params);
+    if (Object.keys(params).length) {
+      // console.log(params);
+      // qs.category_id = encodeURIComponent(categories.join(','));
+      // qs.params = 0;
+
+      Object.entries(params).forEach(([key, value], index) => {
+        // console.log(`${index}: ${key} = ${value}`);
+        qs[`param_${index}`] = key;
+        qs[`value_${index}`] = value;
+      });
+
+      // param_1=vendor&value_1=Disney
+      qs.params = 1;
+    } else {
+      qs.params = 0;
+    }
+
+    console.log(tsid);
     console.log(qs);
 
     request.get({
@@ -66,6 +87,7 @@ can.on('json:sync', (socket = io, { query, offset, limit, categories }) => {
       } else {
         console.log(body);
         body.q = decodeURIComponent(body.q);
+        body.tsid = tsid;
         socket.emit('action', { type: 'json', data: body });
       }
     });
