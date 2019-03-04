@@ -10,8 +10,8 @@ export default class Aggregations extends PureComponent {
   };
 
   static getDerivedStateFromProps(props) {
-    console.log('getDerivedStateFromProps');
-    console.log(props);
+    // console.log('getDerivedStateFromProps');
+    // console.log(props);
     const { json } = props;
 
     if (json && json.es_response) {
@@ -28,27 +28,29 @@ export default class Aggregations extends PureComponent {
           },
           params: {
             PARAM_NAMES: {
-              buckets: availableParams
+              buckets: filteredParams
             }
           }
         },
-        category_id
+        price_max,
+        price_min,
+        ...restParams
       } = aggregations;
 
-      // if (category_id) {
-      //   const {
-      //     category_id: {
-      //       buckets
-      //     }
-      //   } = category_id;
+      // console.log('aggregations');
+      // console.log(aggregations);
       //
-      //   availableCategories = buckets;
-      // }
+      // console.log('restParams');
+      // console.log(restParams);
 
-      console.log('aggregations');
-      console.log(aggregations);
+      let availableParams = Object.entries(restParams).map(([name, value]) => {
+        const { params: { PARAM_NAMES: { buckets } }} = value;
+        return buckets.find(({key}) => name === key);
+      });
 
+      const usedBuckets = availableParams.map(param => param.key);
 
+      availableParams = availableParams.concat(filteredParams.filter(param => !usedBuckets.includes(param.key)));
 
       return {
         aggregations,
@@ -61,15 +63,15 @@ export default class Aggregations extends PureComponent {
           // param = aggregations[param.key] ? aggregations[param.key] : param;
 
           if (aggregations[param.key]) {
-            console.log('param');
-            console.log(param);
-            console.log('aggregations[param.key]');
-            console.log(aggregations[param.key]);
+            // console.log('param');
+            // console.log(param);
+            // console.log('aggregations[param.key]');
+            // console.log(aggregations[param.key]);
             const { params: { PARAM_NAMES: { buckets } }} = aggregations[param.key];
 
             param = buckets.find(({key}) => param.key === key);
-            console.log('found param');
-            console.log(param);
+            // console.log('found param');
+            // console.log(param);
           }
 
           const { VALUES_TO_PARAMS: { NAME_VALUE: { buckets } } } = param;
@@ -86,9 +88,6 @@ export default class Aggregations extends PureComponent {
   render() {
     const { selectedCategories, currentParams, selectCategory, selectParam } = this.props;
     const { availableCategories, availableParams } = this.state;
-
-    // console.log('currentParams');
-    // console.log(currentParams);
 
     return (
       <div className={styles.aggregations}>
