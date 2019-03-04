@@ -10,8 +10,8 @@ export default class Aggregations extends PureComponent {
   };
 
   static getDerivedStateFromProps(props) {
-    // console.log('getDerivedStateFromProps');
-    // console.log(props);
+    console.log('getDerivedStateFromProps');
+    console.log(props);
     const { json } = props;
 
     if (json && json.es_response) {
@@ -22,6 +22,7 @@ export default class Aggregations extends PureComponent {
       } = json;
 
       let {
+        category_id,
         filtered_aggs: {
           category_id: {
             buckets: availableCategories
@@ -39,7 +40,7 @@ export default class Aggregations extends PureComponent {
 
       // console.log('aggregations');
       // console.log(aggregations);
-      //
+
       // console.log('restParams');
       // console.log(restParams);
 
@@ -48,9 +49,16 @@ export default class Aggregations extends PureComponent {
         return buckets.find(({key}) => name === key);
       });
 
+      // console.log('availableParams');
+      // console.log(availableParams);
+
       const usedBuckets = availableParams.map(param => param.key);
+      // console.log('usedBuckets');
+      // console.log(usedBuckets);
 
       availableParams = availableParams.concat(filteredParams.filter(param => !usedBuckets.includes(param.key)));
+      // console.log('availableParams2');
+      // console.log(availableParams);
 
       return {
         aggregations,
@@ -62,17 +70,17 @@ export default class Aggregations extends PureComponent {
         availableParams: availableParams.map(param => {
           // param = aggregations[param.key] ? aggregations[param.key] : param;
 
-          if (aggregations[param.key]) {
+          // if (aggregations[param.key]) {
             // console.log('param');
             // console.log(param);
             // console.log('aggregations[param.key]');
             // console.log(aggregations[param.key]);
-            const { params: { PARAM_NAMES: { buckets } }} = aggregations[param.key];
-
-            param = buckets.find(({key}) => param.key === key);
+            // const { params: { PARAM_NAMES: { buckets } }} = aggregations[param.key];
+            //
+            // param = buckets.find(({key}) => param.key === key);
             // console.log('found param');
             // console.log(param);
-          }
+          // }
 
           const { VALUES_TO_PARAMS: { NAME_VALUE: { buckets } } } = param;
           param.buckets = buckets;
