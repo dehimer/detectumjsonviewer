@@ -85,6 +85,10 @@ class Gallery extends PureComponent {
         state.offset = 0;
         state.categories = [];
         state.params = [];
+      } else if (oldCategories.length !== newCategories.length) {
+        state.offset = 0;
+      } else if (oldParams.length !== newParams.length) {
+        state.offset = 0;
       }
 
       this.setState(state, () => {
