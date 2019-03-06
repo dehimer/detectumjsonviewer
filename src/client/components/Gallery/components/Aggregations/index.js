@@ -10,8 +10,8 @@ export default class Aggregations extends PureComponent {
   };
 
   static getDerivedStateFromProps(props) {
-    console.log('getDerivedStateFromProps');
-    console.log(props);
+    // console.log('getDerivedStateFromProps');
+    // console.log(props);
     const { json } = props;
 
     if (json && json.es_response) {
