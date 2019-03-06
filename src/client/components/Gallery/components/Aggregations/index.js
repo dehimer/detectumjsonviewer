@@ -1,18 +1,21 @@
 import React, { PureComponent } from 'react';
 import Checkbox from 'react-toolbox/lib/checkbox';
+import ArrowDropDownIcon from 'mdi-react/ArrowDropDownIcon';
+import ArrowDropUpIcon from 'mdi-react/ArrowDropUpIcon';
+
 
 import styles from './index.css'
 
 export default class Aggregations extends PureComponent {
   state = {
     availableCategories: [],
-    availableParams: []
+    availableParams: [],
+    openedParamGroups: []
   };
 
-  static getDerivedStateFromProps(props) {
-    // console.log('getDerivedStateFromProps');
-    // console.log(props);
+  static getDerivedStateFromProps(props, state) {
     const { json } = props;
+    let { openedParamGroups } = state;
 
     if (json && json.es_response) {
       const {
@@ -38,64 +41,56 @@ export default class Aggregations extends PureComponent {
         ...restParams
       } = aggregations;
 
-      // console.log('aggregations');
-      // console.log(aggregations);
-
-      // console.log('restParams');
-      // console.log(restParams);
-
       let availableParams = Object.entries(restParams).map(([name, value]) => {
         const { params: { PARAM_NAMES: { buckets } }} = value;
         return buckets.find(({key}) => name === key);
       });
 
-      // console.log('availableParams');
-      // console.log(availableParams);
-
       const usedBuckets = availableParams.map(param => param.key);
-      // console.log('usedBuckets');
-      // console.log(usedBuckets);
 
       availableParams = availableParams.concat(filteredParams.filter(param => !usedBuckets.includes(param.key)));
-      // console.log('availableParams2');
-      // console.log(availableParams);
+
+      const paramNames = availableParams.map(param => param.key);
+
+      openedParamGroups = openedParamGroups.filter(param => paramNames.includes(param));
 
       return {
         aggregations,
         availableCategories: availableCategories.map(category => {
           const { id2name: { buckets } } = category;
           category.buckets = buckets;
+
           return category
         }),
         availableParams: availableParams.map(param => {
-          // param = aggregations[param.key] ? aggregations[param.key] : param;
-
-          // if (aggregations[param.key]) {
-            // console.log('param');
-            // console.log(param);
-            // console.log('aggregations[param.key]');
-            // console.log(aggregations[param.key]);
-            // const { params: { PARAM_NAMES: { buckets } }} = aggregations[param.key];
-            //
-            // param = buckets.find(({key}) => param.key === key);
-            // console.log('found param');
-            // console.log(param);
-          // }
-
           const { VALUES_TO_PARAMS: { NAME_VALUE: { buckets } } } = param;
           param.buckets = buckets;
 
           return param
-        })
+        }),
+        openedParamGroups
       }
     }
 
     return null;
   }
 
+  toggleParamGroup(param) {
+    const { openedParamGroups } = this.state;
+    let updatedopenedParamGroups  = [...openedParamGroups];
+
+    if (updatedopenedParamGroups.includes(param)) {
+      updatedopenedParamGroups = updatedopenedParamGroups.filter(p => p !== param);
+    } else {
+      updatedopenedParamGroups.push(param);
+    }
+
+    this.setState({ openedParamGroups: updatedopenedParamGroups });
+  }
+
   render() {
     const { selectedCategories, currentParams, selectCategory, selectParam } = this.props;
-    const { availableCategories, availableParams } = this.state;
+    const { availableCategories, availableParams, openedParamGroups } = this.state;
 
     return (
       <div className={styles.aggregations}>
@@ -129,16 +124,23 @@ export default class Aggregations extends PureComponent {
         </div>
         {
           availableParams.map(({ key: param, doc_count, buckets }) => {
-
+            const opened = openedParamGroups.includes(param);
             return (
               <div key={param} className={styles.group}>
-                <div className={styles.category}>
-                  <div className={styles.name}><b>{param}</b></div>
+                <div className={styles.category} onClick={() => this.toggleParamGroup(param)}>
+                  <div className={styles.name}>
+                    {
+                      opened
+                        ? <ArrowDropUpIcon />
+                        : <ArrowDropDownIcon />
+                    }
+                    <b>{param}</b>
+                  </div>
                   <div className={styles.count}>{doc_count}</div>
                 </div>
 
                 {
-                  buckets.map(({ key, doc_count }) => {
+                  opened && buckets.map(({ key, doc_count }) => {
                     const checked = !!currentParams.find(p => p.name === param && p.value === key);
 
                     return (

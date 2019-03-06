@@ -1,5 +1,3 @@
-import _ from 'underscore'
-
 import React, { PureComponent } from 'react';
 
 import { ProgressBar, AppBar } from 'react-toolbox/lib';
