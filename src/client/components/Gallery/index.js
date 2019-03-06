@@ -203,7 +203,7 @@ export default class Gallery extends PureComponent {
               lastlevel={true}
             />
 
-            { !loading ? <List json={json} select={(id) => this.onSelect(id)} /> : null }
+            { !loading && <List json={json} select={(id) => this.onSelect(id)} /> }
           </div>
 
           {
