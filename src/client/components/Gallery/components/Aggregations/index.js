@@ -102,29 +102,27 @@ export default class Aggregations extends PureComponent {
         <div className={styles.group}>
           <b>Категории</b>
         </div>
+        <div className={styles.group}>
         {
           availableCategories.map(({ key: categoryId, doc_count, buckets }) => (
-            <div key={categoryId} className={styles.group}>
-              {
-                buckets.map(({ key, doc_count }) => (
-                  <div
-                    key={key}
-                    className={styles.category}
-                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); selectCategory(categoryId) }}
-                  >
-                    <div className={styles.label}>
-                      <Checkbox
-                        checked={selectedCategories.includes(categoryId)}
-                      />
-                      <div className={styles.name}>{key}</div>
-                    </div>
-                    <div className={styles.count}>{doc_count}</div>
-                  </div>
-                ))
-              }
-            </div>
+            buckets.map(({ key, doc_count }) => (
+              <div
+                key={key}
+                className={styles.category}
+                onClick={(e) => { e.stopPropagation(); e.preventDefault(); selectCategory(categoryId) }}
+              >
+                <div className={styles.label}>
+                  <Checkbox
+                    checked={selectedCategories.includes(categoryId)}
+                  />
+                  <div className={styles.name}>{key}</div>
+                </div>
+                <div className={styles.count}>{doc_count}</div>
+              </div>
+            ))
           ))
         }
+        </div>
 
         <div className={styles.group}>
           <b>Параметры</b>
