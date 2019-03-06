@@ -1,8 +1,6 @@
 import _ from 'underscore'
 
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { ProgressBar, AppBar } from 'react-toolbox/lib';
 
@@ -15,7 +13,7 @@ import Pagination from './components/Pagination';
 
 import styles from './index.css'
 
-class Gallery extends PureComponent {
+export default class Gallery extends PureComponent {
   state = {
     json: null,
     query: '',
@@ -25,24 +23,6 @@ class Gallery extends PureComponent {
     offset: 0,
     limit: 32
   };
-
-  static getDerivedStateFromProps(props, state) {
-    const { json } = props;
-    if ( json && state.tsid === json.tsid) {
-      return {
-        json,
-        loading: false
-      }
-    }
-
-    return null;
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.getjson = _.debounce(this.props.getjson, 700);
-  }
 
   componentDidUpdate(prevProps, prevState) {
     const {
@@ -92,7 +72,7 @@ class Gallery extends PureComponent {
       }
 
       this.setState(state, () => {
-        this.getjson({
+        this.getJSON({
           tsid: state.tsid,
           query: newQuery,
           offset: state.offset,
@@ -144,6 +124,55 @@ class Gallery extends PureComponent {
     }
 
     this.setState({ params: [...params] });
+  }
+
+  getJSON({ tsid, query, offset, limit, categories, params }) {
+    if (query) {
+      let qs = {
+        q: encodeURIComponent(query),
+        id2name: true,
+        getrawoutput: true,
+        debug: true,
+        explain: true,
+        offset,
+        limit
+      };
+
+      if (categories.length) {
+        qs.category_id = encodeURIComponent(categories.join(','));
+      }
+
+      qs.params = params.length;
+      if (params.length) {
+        params.forEach((param, index) => {
+          qs[`param_${index}`] = param.name;
+          qs[`value_${index}`] = param.value;
+        });
+      }
+
+      qs = Object.keys(qs)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(qs[k]))
+        .join('&');
+
+      // 'http://front.dev.detectum.com:8181/technopark/search_plain'
+      fetch(`http://front.dev.detectum.com:8181/technopark/search_plain?${qs}`)
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+          if ( json && this.state.tsid === tsid) {
+            json.q = decodeURIComponent(json.q);
+            this.setState({
+              json,
+              loading: false,
+              error: false
+            })
+          }
+        })
+        .catch(e => {
+          console.log(e);
+          this.setState({ loading: false, error: e });
+        });
+    }
   }
 
   render() {
@@ -198,30 +227,3 @@ class Gallery extends PureComponent {
     );
   }
 }
-
-Gallery.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  json: PropTypes.object,
-};
-
-const mapStateToProps = (state) => {
-  const { json } = state.server;
-
-  return { json };
-};
-
-const mapDispatchToProps = dispatch => (
-  {
-    getjson: (data) => {
-      dispatch({
-        type: 'server/getjson',
-        data
-      });
-    },
-  }
-);
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Gallery);
