@@ -128,7 +128,7 @@ export default class Aggregations extends PureComponent {
             return (
               <div key={param} className={styles.group}>
                 <div className={styles.category} onClick={() => this.toggleParamGroup(param)}>
-                  <div className={styles.name}>
+                  <div className={styles.arrow}>
                     {
                       opened
                         ? <ArrowDropUpIcon />

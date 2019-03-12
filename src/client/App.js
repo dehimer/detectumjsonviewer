@@ -4,7 +4,5 @@ import Gallery from './components/Gallery/index';
 import './app.css'
 
 export default () => (
-  <>
-    <Gallery/>
-  </>
+  <Gallery/>
 );
