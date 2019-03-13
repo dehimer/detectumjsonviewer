@@ -37,11 +37,13 @@
     cursor: pointer;
     width: 40px;
     height: 40px;
+    z-index: 1;
 }
 
 
 .content {
     display: flex;
+    color: #eeeeee;
 }
 
 .left {
@@ -61,4 +63,8 @@
     color: white;
     margin-bottom: 15px;
     font-size: 22px;
+}
+
+.part {
+    margin-bottom: 15px;
 }
