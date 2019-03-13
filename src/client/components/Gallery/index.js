@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 
 import { ProgressBar, AppBar } from 'react-toolbox/lib';
+import Button from 'react-toolbox/lib/button';
+import SearchIcon from 'mdi-react/SearchIcon'
 
-import Search from './components/Search'
+
 import Stats from './components/Stats'
 import List from './components/List'
 import Aggregations from './components/Aggregations'
@@ -19,7 +21,8 @@ export default class Gallery extends PureComponent {
     params: [],
     loading: false,
     offset: 0,
-    limit: 32
+    limit: 32,
+    needQuery: false
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -52,11 +55,10 @@ export default class Gallery extends PureComponent {
     if (needQuery) {
       const state = {
         tsid: +(new Date()),
-        json: null,
-        loading: true,
         offset: newOffset,
         categories: newCategories,
         params: newParams,
+        needQuery
       };
 
       if (oldQuery !== newQuery) {
@@ -69,16 +71,36 @@ export default class Gallery extends PureComponent {
         state.offset = 0;
       }
 
-      this.setState(state, () => {
+      this.setState(state);
+    }
+  }
+
+  acceptQuery() {
+    const {
+      needQuery,
+      tsid,
+      query,
+      offset,
+      limit,
+      categories,
+      params
+    } = this.state;
+
+    if (needQuery) {
+      this.setState({
+        needQuery: false,
+        loading: true,
+        json: null,
+      }, () => {
         this.getJSON({
-          tsid: state.tsid,
-          query: newQuery,
-          offset: state.offset,
+          tsid,
+          query,
+          offset,
           limit,
-          categories: state.categories,
-          params: state.params,
+          categories,
+          params,
         });
-      })
+      });
     }
   }
 
@@ -112,7 +134,6 @@ export default class Gallery extends PureComponent {
   }
 
   toggleParam({name, value}) {
-    console.log(`toggleParam(${name}, ${value})`);
     let { params } = this.state;
 
     if (params.find(param => param.name === name && param.value === value)) {
@@ -148,6 +169,8 @@ export default class Gallery extends PureComponent {
         });
       }
 
+      // console.log('qs');
+      // console.log(qs);
       qs = Object.keys(qs)
         .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(qs[k]))
         .join('&');
@@ -162,30 +185,59 @@ export default class Gallery extends PureComponent {
             this.setState({
               json,
               loading: false,
-              error: false
+              error: false,
+              needQuery: false
             })
           }
         })
         .catch(e => {
           console.log(e);
-          this.setState({ loading: false, error: e });
+          this.setState({
+            loading: false,
+            error: e,
+            needQuery: false
+          });
         });
+    }
+  }
+
+  onSearchKeyPress(e) {
+    if (e.key === 'Enter') {
+      this.acceptQuery();
     }
   }
 
   render() {
     const {
-      json, query, loading, categories, params, item, offset, limit
+      json,
+      query,
+      loading,
+      categories,
+      params,
+      item,
+      offset,
+      limit,
+      needQuery
     } = this.state;
 
     return (
       <div className={styles.gallery}>
-        <AppBar className={styles.top}>
-          <Search
-            query={query}
-            search={(query) => this.setState({ query })}
+        <div className={styles.top}>
+          <input
+            type='text'
+            placeholder='Поиск'
+            value={query}
+            onKeyPress={(e) => this.onSearchKeyPress(e)}
+            onChange={(e) => this.setState({ query: e.target.value })}
           />
-        </AppBar>
+          <Button
+            raised primary
+            className={!needQuery ? styles.disabled : null}
+            onClick={() => this.acceptQuery()}
+          >
+            <SearchIcon />
+          </Button>
+        </div>
         <div className={styles.content}>
           {
             loading ? <ProgressBar type="linear" mode="indeterminate" multicolor={true} /> : null

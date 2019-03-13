@@ -15,6 +15,24 @@
 
 .top {
     height: 40px;
+    display: flex;
+    box-shadow: 0 0 3px;
+}
+
+.top button{
+    font-size: 22px;
+}
+
+.top button.disabled{
+    opacity: 0.2;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.top input {
+    flex: 1;
+    font-size: 16px;
+    padding-left: 7px;
 }
 
 .content {
