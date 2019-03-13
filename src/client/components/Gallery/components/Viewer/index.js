@@ -6,7 +6,8 @@ import CloseIcon from 'mdi-react/CloseIcon'
 
 import styles from './index.css';
 
-export default ({ item: { _source }, close }) => {
+export default ({ item, close }) => {
+  const { _source: { model, img_url } } = item;
   return (
     <Dialog
       className={styles.dialog}
@@ -18,14 +19,14 @@ export default ({ item: { _source }, close }) => {
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.headerLeftPart}>
-            <img src={_source.img_url}/>
-            <div className={styles.name}>{ _source.model }</div>
+            <img src={img_url}/>
+            <div className={styles.name}>{model}</div>
           </div>
           <CloseIcon onClick={close} className={styles.close} />
         </div>
 
         <div className={styles.tree}>
-          <ReactJson src={_source} collapsed={false} theme="monokai"/>
+          <ReactJson src={item} collapsed={false} theme="monokai"/>
         </div>
       </div>
     </Dialog>
