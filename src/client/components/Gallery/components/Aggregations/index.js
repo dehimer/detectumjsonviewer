@@ -44,7 +44,7 @@ export default class Aggregations extends PureComponent {
       let availableParams = Object.entries(restParams).map(([name, value]) => {
         const { params: { PARAM_NAMES: { buckets } }} = value;
         return buckets.find(({key}) => name === key);
-      });
+      }).filter(v => !!v);
 
       const usedBuckets = availableParams.map(param => param.key);
 
