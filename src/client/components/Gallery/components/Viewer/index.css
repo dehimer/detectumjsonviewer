@@ -1,13 +1,15 @@
 .dialog {
     background-color: rgb(39, 40, 34);
+
 }
 
-.content {
+.wrapper {
     display: flex;
     flex-direction: column;
     height: 90vh;
     max-width: 95vw;
 }
+
 
 .header {
     display: flex;
@@ -29,18 +31,34 @@
 }
 
 .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
+    width: 40px;
+    height: 40px;
 }
 
-.name {
+
+.content {
     display: flex;
-    align-items: center;
-    margin-left: 10px;
-    color: rgb(253, 151, 31);
 }
 
-.tree {
+.left {
+    margin-right: 20px;
+}
+
+.left img {
+    max-width: 20vw;
+}
+
+.right {
     flex: 1;
     overflow-y: scroll;
 }
 
+.name {
+    color: white;
+    margin-bottom: 15px;
+    font-size: 22px;
+}

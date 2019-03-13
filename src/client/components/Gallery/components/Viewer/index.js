@@ -16,17 +16,20 @@ export default ({ item, close }) => {
       onOverlayClick={close}
       type="fullscreen"
     >
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <div className={styles.headerLeftPart}>
-            <img src={img_url}/>
-            <div className={styles.name}>{model}</div>
-          </div>
-          <CloseIcon onClick={close} className={styles.close} />
-        </div>
+      <div className={styles.wrapper}>
 
-        <div className={styles.tree}>
-          <ReactJson src={item} collapsed={false} theme="monokai"/>
+        <CloseIcon onClick={close} className={styles.close} />
+
+        <div className={styles.content}>
+          <div className={styles.left}>
+            <img src={img_url}/>
+          </div>
+
+          <div className={styles.right}>
+            <div className={styles.name}>{model}</div>
+            <ReactJson src={item} collapsed={false} theme="monokai"/>
+          </div>
+
         </div>
       </div>
     </Dialog>
