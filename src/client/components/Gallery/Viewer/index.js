@@ -4,18 +4,29 @@ import ReactJson from 'react-json-view'
 import Dialog from 'react-toolbox/lib/dialog';
 import CloseIcon from 'mdi-react/CloseIcon'
 
+import Block from './Block';
+
 import styles from './index.css';
 
 export default ({ item, close }) => {
   const {
     _source: {
       model,
+      price,
+      currency = 'rub',
       descr,
       img_url,
       params_agg
     }
   } = item;
 
+  const currencyIconMap = {
+    rub: '₽',
+    usd: '$',
+    eur: '€',
+    uah: '₴',
+    kzt: '₸'
+  };
 
   return (
     <Dialog
@@ -37,17 +48,21 @@ export default ({ item, close }) => {
           <div className={styles.right}>
             <div className={styles.name}>{model}</div>
 
-            <div className={styles.part}>
+            <div className={styles.price}>
+              {price}<span className={styles.currency}>{currencyIconMap[currency]}</span>
+            </div>
+
+            <Block>
               {
                 params_agg && params_agg.map(({name, value}) => (
                   <div>{name}: {value}</div>
                 ))
               }
-            </div>
+            </Block>
 
-            <div className={styles.part}>
+            <Block>
               {descr}
-            </div>
+            </Block>
 
 
             <ReactJson src={item} collapsed={false} theme="monokai"/>

@@ -5,11 +5,11 @@ import Button from 'react-toolbox/lib/button';
 import SearchIcon from 'mdi-react/SearchIcon'
 
 
-import Stats from './components/Stats'
-import List from './components/List'
-import Aggregations from './components/Aggregations'
-import Viewer from './components/Viewer';
-import Pagination from './components/Pagination';
+import Stats from './Stats'
+import List from './List'
+import Aggregations from './Aggregations'
+import Viewer from './Viewer';
+import Pagination from './Pagination';
 
 import styles from './index.css'
 

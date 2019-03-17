@@ -1,0 +1,11 @@
+.block {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.collapsed {
+    white-space: nowrap;
+    width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

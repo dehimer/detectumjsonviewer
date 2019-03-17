@@ -1,5 +1,5 @@
 .dialog {
-    background-color: rgb(39, 40, 34);
+    /*background-color: rgb(39, 40, 34);*/
 
 }
 
@@ -43,7 +43,7 @@
 
 .content {
     display: flex;
-    color: #eeeeee;
+    color: #333333;
 }
 
 .left {
@@ -60,11 +60,16 @@
 }
 
 .name {
-    color: white;
     margin-bottom: 15px;
     font-size: 22px;
 }
 
-.part {
-    margin-bottom: 15px;
+.price {
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.currency {
+    padding-left: 7px;
 }
