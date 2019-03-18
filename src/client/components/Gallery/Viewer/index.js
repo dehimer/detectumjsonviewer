@@ -5,8 +5,17 @@ import Dialog from 'react-toolbox/lib/dialog';
 import CloseIcon from 'mdi-react/CloseIcon'
 
 import Block from './Block';
+import Explanation from './Explanation';
 
 import styles from './index.css';
+
+const currencyIconMap = {
+  rub: '₽',
+  usd: '$',
+  eur: '€',
+  uah: '₴',
+  kzt: '₸'
+};
 
 export default ({ item, close }) => {
   const {
@@ -17,16 +26,10 @@ export default ({ item, close }) => {
       descr,
       img_url,
       params_agg
-    }
+    },
+    _explanation
   } = item;
 
-  const currencyIconMap = {
-    rub: '₽',
-    usd: '$',
-    eur: '€',
-    uah: '₴',
-    kzt: '₸'
-  };
 
   return (
     <Dialog
@@ -55,7 +58,7 @@ export default ({ item, close }) => {
             <Block>
               {
                 params_agg && params_agg.map(({name, value}) => (
-                  <div>{name}: {value}</div>
+                  <div key={name}>{name}: {value}</div>
                 ))
               }
             </Block>
@@ -64,6 +67,7 @@ export default ({ item, close }) => {
               {descr}
             </Block>
 
+            <Explanation explanation={_explanation} />
 
             <ReactJson src={item} collapsed={false} theme="monokai"/>
           </div>
