@@ -12,41 +12,97 @@ export default class Explanation extends PureComponent {
     console.log(description);
     const params = [];
 
-    if (description[0] === '{' && description[description.length-1] === '}') {
-      description = description.slice(1, description.length-1);
-      console.log('description -{}');
+    const jsoned = description[0] === '{' && description[description.length-1] === '}';
+    if (jsoned) {
+      description = description.substr(1, description.length-2);
+      console.log('JSONED');
       console.log(description);
     }
 
     const eatDescription = (description) => {
+      console.log('eatDescription');
+      console.log(description);
       const dotsIndex = description.lastIndexOf(':');
       if (description && dotsIndex !== -1) {
-        const value = description.slice(dotsIndex+1, description.length).trim();
+        let value;
+        const foundCurlesIds = [description.lastIndexOf('{'), description.lastIndexOf('}')];
+        console.log('foundCurlesIds');
+        console.log(foundCurlesIds);
 
-        const leftDescription = description.slice(0, dotsIndex-1);
+        let commed = false;
+        let commaIndex;
+        let leftDescription;
 
-        const commaIndex = leftDescription.lastIndexOf(',');
-        if (commaIndex !== -1) {
-          const param = leftDescription.slice(commaIndex+1, leftDescription.length);
-          params.push([param.trim(), value]);
-          eatDescription(leftDescription.slice(0, commaIndex));
+        if (foundCurlesIds[0] !== -1 && foundCurlesIds[1] !== -1 && (description.length-1) === foundCurlesIds[1]) {
+          commed = true;
+          console.log('commed');
+          console.log(commed);
+          value = description.substr(foundCurlesIds[0]+1, foundCurlesIds[1]-3);
+
+          leftDescription = description.substr(0, foundCurlesIds[0]);
+          leftDescription = leftDescription.substr(0, leftDescription.lastIndexOf(':')-1).trim();
+
+          commaIndex = leftDescription.lastIndexOf(',');
         } else {
-          params.push([leftDescription, value]);
+          value = description.substr(dotsIndex+1, description.length).trim();
+
+          leftDescription = description.substr(0, dotsIndex);
+          commaIndex = leftDescription.lastIndexOf(',');
         }
+
+        console.log('value');
+        console.log(value);
+
+        console.log('leftDescription');
+        console.log(leftDescription);
+
+        if (commaIndex !== -1) {
+          const param = leftDescription.substr(commaIndex+1, leftDescription.length).trim();
+          console.log('param');
+          console.log(param);
+          params.unshift([param, value, jsoned, commed]);
+          eatDescription(leftDescription.substr(0, commaIndex));
+        } else {
+          console.log('leftDescription');
+          console.log(leftDescription);
+          params.unshift([leftDescription, value, jsoned, commed]);
+        }
+
       }
     };
 
     eatDescription(description);
+    console.log('params');
+    console.log(params);
+
+    const blockContent = params.map(([param, value, jsoned, commed], idx) => {
+      if (commed) {
+        return <>
+          <Block key={idx+param} uncollapsable={true}>
+            {param}
+          </Block>
+          <Block key={param+idx}>
+            {value.split(',').map((v, i) => <div key={i+param+idx}>{v.trim()}</div>)}
+          </Block>
+        </>
+      } else if (jsoned) {
+        return <Block key={idx+param} uncollapsable={true}>
+          {param}: {value}
+        </Block>
+      } else {
+        return <div key={idx+param}>{param}: {value}</div>
+      }
+    });
 
     return (
       <>
-        <Block>
-          {
-            params.map(([param, value], idx) => (
-              <div key={idx+param}>{param}: {value}</div>
-            ))
-          }
-        </Block>
+        {
+          blockContent.length
+            ? jsoned
+              ? <div>{blockContent}</div>
+              : <Block uncollapsable={blockContent.length <= 2}>{blockContent}</Block>
+            : null
+        }
         {
           details.map((explanation, idx) => {
             const { description } = explanation;

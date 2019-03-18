@@ -30,6 +30,8 @@ export default ({ item, close }) => {
     _explanation
   } = item;
 
+  console.log('_explanation');
+  console.log(_explanation);
 
   return (
     <Dialog

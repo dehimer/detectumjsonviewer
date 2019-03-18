@@ -1,11 +1,19 @@
 .block {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin: 15px 5px;
+    padding: 7px;
+    cursor: pointer;
+    box-shadow: 0 0 3px black;
+    border-radius: 5px;
+}
+
+.content {
+    transition: height 2s;
+    min-height: 40px;
+    /*height: auto;*/
 }
 
 .collapsed {
-    white-space: nowrap;
-    width: 50px;
+    composes: content;
+    height: 40px;
     overflow: hidden;
-    text-overflow: ellipsis;
 }
