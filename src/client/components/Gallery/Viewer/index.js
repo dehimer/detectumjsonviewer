@@ -68,8 +68,6 @@ export default ({ item, close }) => {
             </Block>
 
             <Explanation explanation={_explanation} />
-
-            <ReactJson src={item} collapsed={false} theme="monokai"/>
           </div>
 
         </div>
