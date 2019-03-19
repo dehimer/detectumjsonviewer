@@ -40,7 +40,7 @@ export default class Explanation extends PureComponent {
           value = description.substr(foundCurlesIds[0]+1, foundCurlesIds[1]-3);
 
           leftDescription = description.substr(0, foundCurlesIds[0]);
-          leftDescription = leftDescription.substr(0, leftDescription.lastIndexOf(':')-1).trim();
+          leftDescription = leftDescription.substr(0, leftDescription.lastIndexOf(':')).trim();
 
           commaIndex = leftDescription.lastIndexOf(',');
         } else {
@@ -72,8 +72,6 @@ export default class Explanation extends PureComponent {
     };
 
     eatDescription(description);
-    console.log('params');
-    console.log(params);
 
     const blockContent = params.map(([param, value, jsoned, commed], idx) => {
       if (commed) {
