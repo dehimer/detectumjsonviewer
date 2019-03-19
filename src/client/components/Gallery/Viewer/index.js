@@ -60,7 +60,7 @@ export default ({ item, close }) => {
             <Block>
               {
                 params_agg && params_agg.map(({name, value}) => (
-                  <div key={name}>{name}: {value}</div>
+                  <div key={name+'_block'}>{name}: {value}</div>
                 ))
               }
             </Block>

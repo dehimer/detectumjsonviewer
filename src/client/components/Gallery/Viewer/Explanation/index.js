@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 
 import Block from '../Block';
 
@@ -77,16 +77,22 @@ export default class Explanation extends PureComponent {
 
     const blockContent = params.map(([param, value, jsoned, commed], idx) => {
       if (commed) {
-        return <>
-          <Block key={idx+param} uncollapsable={true}>
+        return <Fragment key={param+idx+'_param_commed'} >
+          <Block uncollapsable={true}>
             {param}
           </Block>
-          <Block key={param+idx}>
-            {value.split(',').map((v, i) => <div key={i+param+idx}>{v.trim()}</div>)}
+          <Block>
+            {
+              value.split(',').map((v, i) => (
+                <div key={param+idx+'_value_commed_'+i}>
+                  {v.trim()}
+                </div>
+              ))
+            }
           </Block>
-        </>
+        </Fragment>
       } else if (jsoned) {
-        return <Block key={idx+param} uncollapsable={true}>
+        return <Block key={param+'_jsoned_'+idx} uncollapsable={true}>
           {param}: {value}
         </Block>
       } else {
@@ -106,9 +112,8 @@ export default class Explanation extends PureComponent {
         {
           details.map((explanation, idx) => {
             const { description } = explanation;
-
             return (
-              <Explanation key={idx+description} explanation={explanation}/>
+              <Explanation key={description+'_explanation_'+idx} explanation={explanation}/>
             )
           })
         }
