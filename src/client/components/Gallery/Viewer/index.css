@@ -48,6 +48,7 @@
 
 .left {
     margin-right: 20px;
+    height: 100%;
 }
 
 .left img {
@@ -57,6 +58,7 @@
 .right {
     flex: 1;
     overflow-y: scroll;
+    height: 100%;
 }
 
 .name {
