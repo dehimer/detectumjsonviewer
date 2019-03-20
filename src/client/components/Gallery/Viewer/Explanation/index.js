@@ -10,16 +10,15 @@ export default class Explanation extends PureComponent {
     let { description } = explanation;
     console.log('description');
     console.log(description);
-    const params = [];
 
     const jsoned = description[0] === '{' && description[description.length-1] === '}';
     if (jsoned) {
-      description = description.substr(1, description.length-2);
+      description = description.substring(1, description.length-1);
       console.log('JSONED');
       console.log(description);
     }
 
-    const eatDescription = (description) => {
+    const eatDescription = (description, params) => {
       console.log('eatDescription');
       console.log(description);
       const dotsIndex = description.lastIndexOf(':');
@@ -37,16 +36,24 @@ export default class Explanation extends PureComponent {
           commed = true;
           console.log('commed');
           console.log(commed);
-          value = description.substr(foundCurlesIds[0]+1, foundCurlesIds[1]-3);
+          console.log(description[foundCurlesIds[0]]);
+          console.log(description[foundCurlesIds[1]]);
+          value = description.substring(foundCurlesIds[0]+1, foundCurlesIds[1]);
+          console.log('value');
+          console.log(value);
 
-          leftDescription = description.substr(0, foundCurlesIds[0]);
-          leftDescription = leftDescription.substr(0, leftDescription.lastIndexOf(':')).trim();
+          leftDescription = description.substring(0, foundCurlesIds[0]+1);
+          console.log('leftDescription1');
+          console.log(leftDescription);
+          leftDescription = leftDescription.substring(0, leftDescription.lastIndexOf(':')).trim();
+          console.log('leftDescription2');
+          console.log(leftDescription);
 
           commaIndex = leftDescription.lastIndexOf(',');
         } else {
-          value = description.substr(dotsIndex+1, description.length).trim();
+          value = description.substring(dotsIndex+1, description.length+1).trim();
 
-          leftDescription = description.substr(0, dotsIndex);
+          leftDescription = description.substring(0, dotsIndex);
           commaIndex = leftDescription.lastIndexOf(',');
         }
 
@@ -57,21 +64,22 @@ export default class Explanation extends PureComponent {
         console.log(leftDescription);
 
         if (commaIndex !== -1) {
-          const param = leftDescription.substr(commaIndex+1, leftDescription.length).trim();
+          const param = leftDescription.substring(commaIndex+1, leftDescription.length).trim();
           console.log('param');
           console.log(param);
           params.unshift([param, value, jsoned, commed]);
-          eatDescription(leftDescription.substr(0, commaIndex));
+          eatDescription(leftDescription.substring(0, commaIndex), params);
         } else {
           console.log('leftDescription');
           console.log(leftDescription);
           params.unshift([leftDescription, value, jsoned, commed]);
         }
-
       }
+
+      return params;
     };
 
-    eatDescription(description);
+    const params = eatDescription(description, []);
 
     const blockContent = params.map(([param, value, jsoned, commed], idx) => {
       if (commed) {
@@ -81,10 +89,8 @@ export default class Explanation extends PureComponent {
           </Block>
           <Block>
             {
-              value.split(',').map((v, i) => (
-                <div key={param+idx+'_value_commed_'+i}>
-                  {v.trim()}
-                </div>
+              eatDescription(value, []).map(([param, value], i) => (
+                <div key={i+param}>{param}: {value}</div>
               ))
             }
           </Block>
