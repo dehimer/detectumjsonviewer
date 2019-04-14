@@ -25,13 +25,19 @@ export default class Gallery extends PureComponent {
     needQuery: false
   };
 
+  constructor(props) {
+    super(props);
+    this.galleryRef = React.createRef()   // Create a ref object
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const {
       query: oldQuery,
       offset: oldOffset,
       categories: oldCategories,
       params: oldParams,
-      waitAccept: oldWaitAccept
+      waitAccept: oldWaitAccept,
+      loading: oldLoading,
     } = prevState;
 
     const {
@@ -39,8 +45,13 @@ export default class Gallery extends PureComponent {
       offset: newOffset,
       categories: newCategories,
       params: newParams,
-      waitAccept: newWaitAccept
+      waitAccept: newWaitAccept,
+      loading: newLoading
     } = this.state;
+
+    if (oldLoading && !newLoading) {
+      this.galleryRef.current.scrollTo(0, 0);
+    }
 
     let needQuery = false;
     let waitAccept = false;
@@ -235,7 +246,7 @@ export default class Gallery extends PureComponent {
     } = this.state;
 
     return (
-      <div className={styles.gallery}>
+      <div className={styles.gallery} ref={this.galleryRef}>
         <div className={styles.top}>
           <input
             type='text'
