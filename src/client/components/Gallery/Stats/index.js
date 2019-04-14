@@ -52,10 +52,17 @@ export default class Stats extends Component {
 
     return (
       <div className={styles.stats}>
-        <div>{offset}-{Math.min(offset + limit, total)}</div>
         <div>Запрос:<b>{ query }</b></div>
-        <div>Время: <b>{ spend }мс</b></div>
-        <div className={styles.totalFound}>Найдено:<b>{ total }</b></div>
+        <div>Время выполнения: <b>{ spend }мс</b></div>
+
+        <div className={styles.totalFound}>
+          <div>
+            Всего найдено:<b>{ total }</b>
+          </div>
+          <div>
+            Отображено: <b>{offset+1}</b> - <b>{Math.min(offset + limit, total)}</b>
+          </div>
+        </div>
       </div>
     )
   }
