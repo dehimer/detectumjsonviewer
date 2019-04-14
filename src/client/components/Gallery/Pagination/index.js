@@ -27,6 +27,7 @@ export default ({ json, offset, limit, change }) => {
     <ReactPaginate
       containerClassName={styles.pagination}
       pageClassName={styles.page}
+      pageLinkClassName={styles.pageLink}
 
       previousClassName={styles.page}
       nextClassName={styles.page}

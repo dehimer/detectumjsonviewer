@@ -10,16 +10,8 @@
 }
 
 .page {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-
-    padding: 5px 15px;
+    display: initial;
     margin: 0 2px;
-
-    height: 30px;
-    min-width: 22px;
-
 
     border: 1px solid rgba(0, 0, 0, 0.5);
     background-color: white;
@@ -35,8 +27,17 @@
     composes: page;
     background-color: white;
     font-weight: bold;
+    border-width: 2px;
+}
+
+.pageLink {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    min-width: 32px;
+    padding: 5px;
 }
 
 .arrow {
-    margin-top: -2px;
+    margin-top: 3px;
 }
