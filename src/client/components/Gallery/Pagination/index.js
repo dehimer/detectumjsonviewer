@@ -40,6 +40,8 @@ export default ({ json, offset, limit, change }) => {
 
       rangeLeftButtonLabel={(<MoreHorizIcon />)}
       rangeRightButtonLabel={(<MoreHorizIcon />)}
+      breakLabel={(<div className={styles.pageLink}>...</div>)}
+
 
       onPageChange={({selected}) => change(selected)}
 
