@@ -30,7 +30,8 @@ export default class Gallery extends PureComponent {
       query: oldQuery,
       offset: oldOffset,
       categories: oldCategories,
-      params: oldParams
+      params: oldParams,
+      waitAccept: oldWaitAccept
     } = prevState;
 
     const {
@@ -38,14 +39,19 @@ export default class Gallery extends PureComponent {
       offset: newOffset,
       categories: newCategories,
       params: newParams,
-      limit
+      waitAccept: newWaitAccept
     } = this.state;
 
     let needQuery = false;
-    if (oldQuery !== newQuery) {
+    let waitAccept = false;
+    if (newWaitAccept && oldWaitAccept !== newWaitAccept) {
+      this.acceptQuery();
+      return;
+    } else if (oldQuery !== newQuery) {
       needQuery = true;
     } else if (oldOffset !== newOffset) {
       needQuery = true;
+      waitAccept = true;
     } else if (oldCategories.length !== newCategories.length) {
       needQuery = true;
     } else if (oldParams.length !== newParams.length) {
@@ -58,7 +64,8 @@ export default class Gallery extends PureComponent {
         offset: newOffset,
         categories: newCategories,
         params: newParams,
-        needQuery
+        needQuery,
+        waitAccept,
       };
 
       if (oldQuery !== newQuery) {
@@ -89,8 +96,9 @@ export default class Gallery extends PureComponent {
     if (needQuery) {
       this.setState({
         needQuery: false,
-        loading: true,
         json: null,
+        waitAccept: false,
+        loading: true,
       }, () => {
         this.getJSON({
           tsid,
@@ -119,6 +127,16 @@ export default class Gallery extends PureComponent {
 
     this.setState({ item });
   };
+
+  onPageChange(page) {
+    const {
+      limit,
+    } = this.state;
+
+    this.setState({
+      offset: page * limit
+    })
+  }
 
   toggleCategory(category) {
     let { categories } = this.state;
@@ -241,7 +259,7 @@ export default class Gallery extends PureComponent {
               : null
           }
 
-          <Stats json={json} />
+          <Stats json={json} offset={offset} limit={limit}/>
 
           <div className={styles.fx}>
             <Aggregations
@@ -260,7 +278,7 @@ export default class Gallery extends PureComponent {
                     json={json}
                     offset={offset}
                     limit={limit}
-                    change={(page) => this.setState({ offset: page * limit })}
+                    change={(page) => this.onPageChange(page)}
                   />
                 </div>
               </List>

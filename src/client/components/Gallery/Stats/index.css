@@ -6,11 +6,17 @@
     font-size: 12px;
 }
 
-.stats div {
+.stats div:not(:last-child) {
     margin-right: 20px;
 }
 
 b {
     margin-left: 5px;
     font-size: 14px;
+}
+
+.totalFound {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
 }
