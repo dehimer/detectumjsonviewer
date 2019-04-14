@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from './index.css'
 
-export default ({ json, select }) => {
+export default ({ json, select, children }) => {
   const noresultsEl = (
     <div className={styles.noResults}>
       Ничего не найдено
@@ -46,6 +46,8 @@ export default ({ json, select }) => {
         );
       })
     }
+
+    {children}
     </div>
   );
 }

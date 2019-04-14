@@ -5,6 +5,8 @@
     align-items: center;
     flex: 1;
     margin: 0;
+    color: #333;
+    padding-bottom: 10px;
 }
 
 .page {
@@ -12,24 +14,29 @@
     justify-content: center;
     align-content: center;
 
-    padding: 5px;
+    padding: 5px 15px;
     margin: 0 2px;
 
-    height: 22px;
+    height: 30px;
     min-width: 22px;
 
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background-color: white;
     cursor: pointer;
     border-radius: 4px;
 
     outline: none;
     user-select: none;
+    box-sizing: border-box;
 }
 
 .activePage {
     composes: page;
-    color: black;
     background-color: white;
+    font-weight: bold;
 }
 
+.arrow {
+    margin-top: -2px;
+}

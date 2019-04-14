@@ -33,8 +33,8 @@ export default ({ json, offset, limit, change }) => {
       activeClassName={styles.activePage}
       breakClassName={styles.page}
 
-      previousLabel={<ChevronLeftIcon />}
-      nextLabel={<ChevronRightIcon />}
+      previousLabel={<ChevronLeftIcon className={styles.arrow}/>}
+      nextLabel={<ChevronRightIcon className={styles.arrow}/>}
 
 
       rangeLeftButtonLabel={(<MoreHorizIcon />)}

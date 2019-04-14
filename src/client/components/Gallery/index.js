@@ -121,7 +121,6 @@ export default class Gallery extends PureComponent {
   };
 
   toggleCategory(category) {
-    console.log(`toggleCategory(${category})`);
     let { categories } = this.state;
 
     if (categories.includes(category)) {
@@ -169,13 +168,10 @@ export default class Gallery extends PureComponent {
         });
       }
 
-      // console.log('qs');
-      // console.log(qs);
       qs = Object.keys(qs)
         .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(qs[k]))
         .join('&');
 
-      // 'http://front.dev.detectum.com:8181/technopark/search_plain'
       fetch(`http://front.dev.detectum.com:8181/technopark/search_plain?${qs}`)
         .then(response => response.json())
         .then(json => {
@@ -240,7 +236,9 @@ export default class Gallery extends PureComponent {
         </div>
         <div className={styles.content}>
           {
-            loading ? <ProgressBar type="linear" mode="indeterminate" multicolor={true} /> : null
+            loading
+              ? <ProgressBar type="linear" mode="indeterminate" multicolor={true} />
+              : null
           }
 
           <Stats json={json} />
@@ -255,7 +253,19 @@ export default class Gallery extends PureComponent {
               lastlevel={true}
             />
 
-            { !loading && <List json={json} select={(id) => this.onSelect(id)} /> }
+            { !loading && (
+              <List json={json} select={(id) => this.onSelect(id)}>
+                <div className={styles.bottom}>
+                  <Pagination
+                    json={json}
+                    offset={offset}
+                    limit={limit}
+                    change={(page) => this.setState({ offset: page * limit })}
+                  />
+                </div>
+              </List>
+              )
+            }
           </div>
 
           {
@@ -263,15 +273,6 @@ export default class Gallery extends PureComponent {
               ? <Viewer item={item} close={() => this.setState({ item: null })} />
               : null
           }
-        </div>
-
-        <div className={styles.bottom}>
-          <Pagination
-            json={json}
-            offset={offset}
-            limit={limit}
-            change={(page) => this.setState({ offset: page * limit })}
-          />
         </div>
       </div>
     );
