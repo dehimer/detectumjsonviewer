@@ -1,21 +1,46 @@
 .stats {
     display: flex;
+    min-height: 40px;
+    overflow-y: hidden;
+}
+
+.queryInfo {
+    display: flex;
     color: #333;
-    padding:  10px 10px;
-    font-size: 15px;
+    flex: 1;
+    align-items: center;
+    padding-left: 10px;
 }
 
-.stats div:not(:last-child) {
-    margin-right: 20px;
-}
-
-b {
-    margin-left: 5px;
-    font-size: 14px;
+.queryInfo div:not(:last-child) {
+    margin-right: 10px;
 }
 
 .totalFound {
-    flex: 1;
     display: flex;
     justify-content: flex-end;
+    background-color: dodgerblue;
+    color: white;
+    font-size: 20px;
+    padding:  10px 10px;
+    position: relative;
+}
+
+.totalFound .rotatedSquare {
+    background-color: dodgerblue;
+    height: 40px;
+    width: 40px;
+    transform: rotate(45deg);
+    left: -20px;
+    position: absolute;
+}
+
+.rotatedSquareTop {
+    composes: rotatedSquare;
+    top: -20px;
+}
+
+.rotatedSquareBottom {
+    composes: rotatedSquare;
+    bottom: -20px;
 }
