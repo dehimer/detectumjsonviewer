@@ -49,10 +49,6 @@ export default class Gallery extends PureComponent {
       loading: newLoading
     } = this.state;
 
-    if (oldLoading && !newLoading) {
-      this.galleryRef.current.scrollTo(0, 0);
-    }
-
     let needQuery = false;
     let waitAccept = false;
     if (newWaitAccept && oldWaitAccept !== newWaitAccept) {
@@ -121,6 +117,8 @@ export default class Gallery extends PureComponent {
         });
       });
     }
+
+    this.galleryRef.current.scrollTo(0, 0);
   }
 
   onSelect = (id) => {
