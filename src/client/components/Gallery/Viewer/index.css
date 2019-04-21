@@ -1,13 +1,13 @@
 .dialog {
     /*background-color: rgb(39, 40, 34);*/
-
+    background-color: #eee;
 }
 
 .wrapper {
     display: flex;
     flex-direction: column;
-    height: 90vh;
-    max-width: 95vw;
+    height: 85vh;
+    max-width: 85vw;
 }
 
 
@@ -53,6 +53,7 @@
 
 .left img {
     max-width: 20vw;
+    border-radius: 2px;
 }
 
 .right {
